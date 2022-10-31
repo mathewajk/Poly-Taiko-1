@@ -1,9 +1,7 @@
 class Beat {
-  constructor(i, j) {
+  constructor() {
     this.active = false;
     this.setSize(canvasXStep);
-    this.i = i;
-    this.j = j;
   }
   
   setSize() {
@@ -38,7 +36,7 @@ class Beat {
     // Beat number
     fill(0, 0, 0);
     textAlign(CENTER,CENTER);
-    text(this.i + 1 + "." + (this.j + 1), this.x + this.size/2, this.y + this.size/2);
+    text(i % beatsPerBar + 1, this.x + this.size/2, this.y + this.size/2);
   }
   
 }

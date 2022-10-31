@@ -3,7 +3,7 @@ class PlayButton {
   constructor() {
     
     this.x = canvasXStep * 5;
-    this.y = canvasYStep * 9.25;
+    this.y = canvasYStep * 9;
     this.c = canvasXStep/1.5;
     
     this.interval = 0;
