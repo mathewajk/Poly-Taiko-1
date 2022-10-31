@@ -1,9 +1,11 @@
 let colliding = null;
+
 let bpmSlider;
 let playButton;
-
+let tsSlider;
 
 let instruments = [new Instrument(0), new Instrument(1), new Instrument(2)];
+
 let instAreaHeight = 0;
 
 function windowResized() {
@@ -15,6 +17,7 @@ function windowResized() {
   let sliderWidth = canvasXStep;
   bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
   bpmSlider.style('width', sliderWidth + 'px');
+  tsSlider.position(canvasXStep * 2.25, canvasYStep * 2.5 + instAreaHeight);
   
   fontSize = baseFontSize * (canvasWidth/1600);
   
@@ -83,6 +86,7 @@ function setup() {
     instrument.tsSlider = createSlider(2, 10, 4);
     
     instrument.sliderPos = 4;
+    instrument.tsSliderPos = globalBeats;
     instrument.calculatePos(i);
     
     let offset = instrument.bars.length % 4 == 0 ? 0 : 1;
@@ -100,8 +104,12 @@ function setup() {
   bpmSlider = createSlider(60, 200, 120, 1);
   bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
   
+  tsSlider = createSlider(2,10,4,1);
+  tsSlider.position(canvasXStep * 2.25, canvasYStep * 2.5 + instAreaHeight);
+  
   let sliderWidth = canvasXStep;
   bpmSlider.style('width', sliderWidth + 'px');
+  tsSlider.style('width', sliderWidth + 'px');
   
 }
 
@@ -121,6 +129,8 @@ function drawInterfaceBounds() {
   
   // BPM select
   rect(xs * 0.25, ys * 1.88 + instAreaHeight, xs * 1.5, ys * 1);
+  
+  rect(xs * 2, ys * 1.88 + instAreaHeight, xs * 1.5, ys * 1);
 
 }
 
@@ -137,6 +147,7 @@ function drawInterfaceLabels() {
   text("Drm Select", canvasXStep * 1, canvasYStep * 1.8);
   text("Sequence", canvasXStep * 8, canvasYStep * 1.8);
   text("BPM: " + bpmSlider.value(), canvasXStep, canvasYStep * 2.25 + instAreaHeight);
+  text("Time signature:\n" + tsSlider.value() + "/4", canvasXStep * 2.75, canvasYStep * 2.25 + instAreaHeight);
   
   textSize(fontSize);
   text("60", canvasXStep * 0.5, canvasYStep * 2.75 + instAreaHeight);
@@ -157,6 +168,19 @@ function draw() {
   let beatDuration = 60.0/bpm * 1000;
   globalDelta = deltaTime;
   
+  if(globalBeats != tsSlider.value()) {
+    console.log(globalBeats);
+    instruments.forEach((instrument, i) => {
+      console.log(instrument.bars.length);
+      console.log(tsSlider.value());
+      if(instrument.bars.length == globalBeats * 2) {
+       instrument.updateBarCount(tsSlider.value() * 2);
+      }
+    });
+    resizeInstrumentArea();
+    globalBeats = tsSlider.value();
+  }
+  
   instruments.forEach((instrument, i) => {
     
     if(playing) {
@@ -164,26 +188,14 @@ function draw() {
       let thisBar = instrument.bars[instrument.barPos];
       let thisBeat = thisBar.beats[instrument.beatPos];
       
-      let noteDuration = (60.0/bpm) * (4.0 / (thisBar.beatDivision * 4.0)) * 1000;
-      let prevDuration = (60.0/bpm) * (4.0 / (instrument.prevBar.beatDivision * 4.0)) * 1000;
+      let noteDuration = (60.0/bpm) * (1.0 / thisBar.beatDivision) * 1000;
+      let prevDuration = (60.0/bpm) * (1.0 / instrument.prevBar.beatDivision) * 1000;
+      
       let noteStart = noteDuration * (instrument.beatPos);
-      //console.log(globalInterval);
       
       if(globalInterval >= noteStart - prevDuration && globalInterval <= noteStart) {         
-                    
-          if(instrument.type == 0) {
-            //console.log("Global interv: " + globalInterval); 
-           // console.log("Beat duration: " + beatDuration);
-            //console.log("Note pos:      " + (noteDuration * (instrument.beatPos)));
-            //console.log("Bar: " + thisBar.i);
-            //console.log("Beat: " + thisBeat.j);
-          }
 
           if(thisBeat.active) {
-            
-            if(instrument.type == 0) {
-              console.log("Schedule: " + (noteStart - globalInterval));
-            }
             
             let samples = drums[instrument.type].samples; 
             if(samples.length) {
@@ -220,7 +232,8 @@ function draw() {
  
     // Check if the user has adjusted an instrument's global beat division or time signature
     let beatSliderVal = instrument.slider.value();  
-    let tsSliderVal = instrument.tsSlider.value();  
+    let tsSliderVal = instrument.tsSlider.value(); 
+    
     if(instrument.sliderPos != beatSliderVal) {
         instrument.bars.forEach((bar) => {
           bar.updateBeatCount(beatSliderVal);
@@ -228,21 +241,12 @@ function draw() {
         });
     }
     
-    if(instrument.bars.length != tsSliderVal * 2) {
-      instrument.updateBarCount(tsSliderVal * 2);
-      instAreaHeight = 0;
-      instruments.forEach((instrument, i) => {
-        instrument.calculatePos(i);
-        let offset = instrument.bars.length % 4 == 0 ? 0 : 1;
-        let widthMult = Math.max(Math.floor(instrument.bars.length / 4) + offset, 2);
-    instAreaHeight += canvasYStep * 0.8 * widthMult + canvasYStep/2;
-        });
-    instAreaHeight += canvasYStep;
-    setCanvasSize();
-      resizeCanvas(canvasWidth, canvasHeight);
-      bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
-    playButton.resize();
+    if(instrument.tsSliderPos != tsSliderVal && instrument.bars.length != tsSliderVal * 2) {
+     instrument.updateBarCount(tsSliderVal * 2);
+     resizeInstrumentArea();
+     instrument.tsSliderPos = tsSliderVal;
     }
+    
     instrument.draw();
 
     instrument.bars.forEach((bar) => {
@@ -330,6 +334,7 @@ function togglePlayback() {
   
   playing = !playing;
   toggleSlider(bpmSlider);
+  toggleSlider(tsSlider);
   
   globalInterval = 0;
 
@@ -343,6 +348,7 @@ function togglePlayback() {
     instrument.triggered = false;
 
     toggleSlider(instrument.slider);
+    toggleSlider(instrument.tsSlider);
 
     instrument.bars.forEach((bar) => {
       bar.beats.forEach((beat) => {
@@ -350,6 +356,25 @@ function togglePlayback() {
       });
     });
   });
+}
+
+function resizeInstrumentArea() {
+  instAreaHeight = 0;
+  instruments.forEach((instrument, i) => {
+    instrument.calculatePos(i);
+    let offset = instrument.bars.length % 4 == 0 ? 0 : 1;
+    let widthMult = Math.max(Math.floor(instrument.bars.length / 4) + offset, 2);
+  instAreaHeight += canvasYStep * 0.8 * widthMult + canvasYStep/2;
+  });
+
+  instAreaHeight += canvasYStep;
+  
+  setCanvasSize();
+  resizeCanvas(canvasWidth, canvasHeight);
+  
+  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
+  tsSlider.position(canvasXStep * 2.25, canvasYStep * 2.5 + instAreaHeight);
+  playButton.resize();
 }
 
 function toggleSlider(slider) {
