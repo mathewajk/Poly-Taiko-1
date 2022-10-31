@@ -11,7 +11,7 @@ let canvasMinWidth = 800;
 
 
 let canvasXDiv = 15;
-let canvasYDiv = 10;
+let canvasYDiv = 15;
 
 let canvasXStep = canvasWidth/canvasXDiv;
 let canvasYStep = canvasHeight/canvasYDiv;
@@ -41,5 +41,5 @@ function setCanvasSize() {
   canvasWidth  = windowWidth >= canvasMinWidth ? windowWidth : canvasMinWidth;
   canvasHeight = canvasWidth * (2/3);
   canvasXStep = canvasWidth/canvasXDiv;
-  canvasYStep = canvasHeight/canvasYDiv;
+  canvasYStep = canvasWidth/canvasYDiv;
 }
