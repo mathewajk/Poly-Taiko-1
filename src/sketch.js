@@ -4,6 +4,7 @@ let playButton;
 
 
 let instruments = [new Instrument(0), new Instrument(1), new Instrument(2)];
+let instAreaHeight = 0;
 
 function windowResized() {
   
@@ -12,14 +13,23 @@ function windowResized() {
   playButton.resize();
   
   let sliderWidth = canvasXStep;
-  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 9.25);
+  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
   bpmSlider.style('width', sliderWidth + 'px');
   
   fontSize = baseFontSize * (canvasWidth/1600);
   
+  instAreaHeight = 0;
+  
   instruments.forEach((instrument, i) => {
     instrument.calculatePos(i);
+    
+    let offset = instrument.bars.length % 4 == 0 ? 0 : 1;
+    let widthMult = Math.max(Math.floor(instrument.bars.length / 4) + offset, 2);
+    instAreaHeight += canvasYStep * 0.8 * widthMult + canvasYStep/2;
+    
   });
+  
+  instAreaHeight += canvasYStep;
   
   resizeCanvas(canvasWidth, canvasHeight);
   
@@ -59,10 +69,13 @@ function preload(){
 function setup() {
   
   setCanvasSize();
+
   playButton = new PlayButton();
   
   fontSize = baseFontSize * (canvasWidth/1600);
   createCanvas(canvasWidth, canvasHeight);
+  
+  instAreaHeight = 0;
   
   instruments.forEach((instrument, i) => {  
     
@@ -71,13 +84,21 @@ function setup() {
     
     instrument.sliderPos = 4;
     instrument.calculatePos(i);
-    instrument.triggered = false;
+    
+    let offset = instrument.bars.length % 4 == 0 ? 0 : 1;
+    let widthMult = Math.max(Math.floor(instrument.bars.length / 4) + offset, 2);
+    instAreaHeight += canvasYStep * 0.8 * widthMult + canvasYStep/2;
   });
+  instAreaHeight += canvasYStep;
+  
+  setCanvasSize();
+  playButton.resize();
+  resizeCanvas(canvasWidth, canvasHeight);
   
   playButton.color = instruments[0].color;
   
   bpmSlider = createSlider(60, 200, 120, 1);
-  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 9.25);
+  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
   
   let sliderWidth = canvasXStep;
   bpmSlider.style('width', sliderWidth + 'px');
@@ -92,14 +113,14 @@ function drawInterfaceBounds() {
   fill(0,0,0,0);
   
   // Drum select
-  rect(xs * 0.25, ys * 1.5, xs * 1.5, ys * instruments.length * 2.25);
+  rect(xs * 0.25, ys * 1.5, xs * 1.5, instAreaHeight);
   line(xs * 0.5, ys * 2, xs * 1.5, ys * 2);
   
   // Sequencer
-  rect(xs * 2, ys * 1.5, xs * (canvasXDiv * (8.4/10)), ys * instruments.length * 2.25);
+  rect(xs * 2, ys * 1.5, xs * (canvasXDiv * (8.4/10)), instAreaHeight);
   
   // BPM select
-  rect(xs * 0.25, ys * 8.75, xs * 1.5, ys * 1);
+  rect(xs * 0.25, ys * 1.88 + instAreaHeight, xs * 1.5, ys * 1);
 
 }
 
@@ -115,11 +136,11 @@ function drawInterfaceLabels() {
   textSize(fontSize * 1.25);
   text("Drm Select", canvasXStep * 1, canvasYStep * 1.8);
   text("Sequence", canvasXStep * 8, canvasYStep * 1.8);
-  text("BPM: " + bpmSlider.value(), canvasXStep, canvasYStep * 9.15);
+  text("BPM: " + bpmSlider.value(), canvasXStep, canvasYStep * 2.25 + instAreaHeight);
   
   textSize(fontSize);
-  text("60", canvasXStep * 0.5, canvasYStep * 9.6);
-  text("200", canvasXStep * 1.5, canvasYStep * 9.6);
+  text("60", canvasXStep * 0.5, canvasYStep * 2.75 + instAreaHeight);
+  text("200", canvasXStep * 1.5, canvasYStep * 2.75 + instAreaHeight);
 }
 
 function draw() {
@@ -208,12 +229,17 @@ function draw() {
     }
     
     if(instrument.bars.length != tsSliderVal * 2) {
-        instrument.updateBarCount(tsSliderVal * 2);
+      instrument.updateBarCount(tsSliderVal * 2);
+      instAreaHeight = 0;
       instruments.forEach((instrument, i) => {
         instrument.calculatePos(i);
-      });
+        let offset = instrument.bars.length % 4 == 0 ? 0 : 1;
+        let widthMult = Math.max(Math.floor(instrument.bars.length / 4) + offset, 2);
+    instAreaHeight += canvasYStep * 0.8 * widthMult + canvasYStep/2;
+        });
+    instAreaHeight += canvasYStep;
+    setCanvasSize();
     }
-    
     instrument.draw();
 
     instrument.bars.forEach((bar) => {

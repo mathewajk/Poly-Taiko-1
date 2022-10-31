@@ -39,7 +39,7 @@ class PlayButton {
 
   resize() {
     this.x = canvasXStep * canvasXDiv * 5/10;
-    this.y = canvasYStep * 9.25;
-    this.c = canvasXStep/1.5;
+    this.y = canvasYStep * 2.5 + instAreaHeight;
+    this.c = canvasXStep;
   }
 }

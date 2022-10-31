@@ -6,7 +6,7 @@ let interval = 0;
 let playing = false;
 
 let canvasWidth = 2000;
-let canvasHeight = 1000;
+let canvasHeight = canvasWidth * (2/3);
 let canvasMinWidth = 800;
 
 
@@ -39,7 +39,10 @@ let drums = [
 
 function setCanvasSize() {
   canvasWidth  = windowWidth >= canvasMinWidth ? windowWidth : canvasMinWidth;
-  canvasHeight = canvasWidth * (2/3);
+  
   canvasXStep = canvasWidth/canvasXDiv;
   canvasYStep = canvasWidth/canvasYDiv;
+  
+  canvasHeight = instAreaHeight + canvasYStep * 4;
+  
 }
