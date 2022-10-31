@@ -103,6 +103,7 @@ class Instrument {
   
   constructor(type) {
     
+    this.i = type;
     this.type = type;
     
     this.beatDivision = 4;
@@ -182,7 +183,17 @@ class Instrument {
   }
   
   calculatePos(i) {
-    this.y = i * canvasYStep * 2 + canvasYStep * 2.65;
+    
+    let prevY = canvasYStep * 2.15;
+    let prevLen = 0;
+    
+    if(i > 0){
+      prevY = instruments[i-1].y;
+      let offset = instruments[i-1].bars.length % 4 == 0 ? 0 : 1;
+      prevLen = Math.max(Math.floor(instruments[i-1].bars.length / 4) + offset, 2);
+    }
+    
+    this.y = canvasYStep * 0.8 * prevLen + prevY + canvasYStep/2;
     this.x = canvasXStep * 1;
     this.c = canvasXStep / 1.5;
 

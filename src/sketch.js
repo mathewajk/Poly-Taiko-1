@@ -196,10 +196,8 @@ function draw() {
       }
       instrument.interval += globalDelta;
     }
-
-
-    
-    // Check if the user has adjusted an instrument's time division
+ 
+    // Check if the user has adjusted an instrument's global beat division or time signature
     let beatSliderVal = instrument.slider.value();  
     let tsSliderVal = instrument.tsSlider.value();  
     if(instrument.sliderPos != beatSliderVal) {
@@ -211,6 +209,9 @@ function draw() {
     
     if(instrument.bars.length != tsSliderVal * 2) {
         instrument.updateBarCount(tsSliderVal * 2);
+      instruments.forEach((instrument, i) => {
+        instrument.calculatePos(i);
+      });
     }
     
     instrument.draw();
