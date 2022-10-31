@@ -239,6 +239,9 @@ function draw() {
         });
     instAreaHeight += canvasYStep;
     setCanvasSize();
+      resizeCanvas(canvasWidth, canvasHeight);
+      bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
+    playButton.resize();
     }
     instrument.draw();
 
