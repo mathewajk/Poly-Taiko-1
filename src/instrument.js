@@ -141,7 +141,7 @@ class Instrument {
     
     if(this.bars.length < val) {
       for(let j=0; j < (val - this.bars.length) * bars; j++) {
-        this.bars.push(new Bar(this.beatDivision, this.color, this.x, this.y));
+        this.bars.push(new Bar(this.beatDivision, j + this.bars.length - 1, this.x, this.y));
       }
     } else if(this.bars.length > val) {
       for(let j=0; j < (this.bars.length - val) * bars; j++) {
@@ -170,7 +170,8 @@ class Instrument {
          this.x + canvasXStep * (canvasXDiv * (8.75/10)),    this.y - canvasYStep/1.6);
     
     textSize(fontSize/1.5);
-    text("Global division: " + this.slider.value() + "s", this.x, this.y + canvasYStep);
+    text("Global division: " + this.slider.value() + "s", this.x, this.y + canvasYStep / 1.1);
+    text("Time signature: "  + this.tsSlider.value() + "/4", this.x, this.y + canvasYStep * 1.5);
     
     textSize(fontSize);
     
@@ -186,9 +187,13 @@ class Instrument {
     this.c = canvasXStep / 1.5;
 
     this.calculateBarPos();
-    this.slider.position(this.x - canvasXStep/3, this.y + canvasYStep/2);
+    
+    this.slider.position(this.x - canvasXStep/3, this.y + canvasYStep/2.5);
+    this.tsSlider.position(this.x - canvasXStep/3, this.y + canvasYStep);
     
     let sliderWidth = canvasXStep * (2/3);
     this.slider.style('width', sliderWidth + 'px');
+    this.tsSlider.style('width', sliderWidth + 'px');
   }
+  
 }

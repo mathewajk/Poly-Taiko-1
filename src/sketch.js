@@ -65,7 +65,10 @@ function setup() {
   createCanvas(canvasWidth, canvasHeight);
   
   instruments.forEach((instrument, i) => {  
+    
     instrument.slider = createSlider(2, 7, 4);
+    instrument.tsSlider = createSlider(2, 10, 4);
+    
     instrument.sliderPos = 4;
     instrument.calculatePos(i);
     instrument.triggered = false;
@@ -198,11 +201,16 @@ function draw() {
     
     // Check if the user has adjusted an instrument's time division
     let beatSliderVal = instrument.slider.value();  
+    let tsSliderVal = instrument.tsSlider.value();  
     if(instrument.sliderPos != beatSliderVal) {
         instrument.bars.forEach((bar) => {
           bar.updateBeatCount(beatSliderVal);
           instrument.sliderPos = beatSliderVal;
-        })
+        });
+    }
+    
+    if(instrument.bars.length != tsSliderVal * 2) {
+        instrument.updateBarCount(tsSliderVal * 2);
     }
     
     instrument.draw();
