@@ -15,7 +15,7 @@ function windowResized() {
   bpmSlider.position(canvasXStep * 0.5, canvasYStep * 9.25);
   bpmSlider.style('width', sliderWidth + 'px');
   
-  fontSize = baseFontSize * (canvasWidth/1200);
+  fontSize = baseFontSize * (canvasWidth/1600);
   
   instruments.forEach((instrument, i) => {
     instrument.calculatePos(i);
@@ -56,17 +56,17 @@ function preload(){
   ];
 }
 
-
 function setup() {
   
   setCanvasSize();
   playButton = new PlayButton();
   
-  fontSize = baseFontSize * (canvasWidth/1200);
+  fontSize = baseFontSize * (canvasWidth/1600);
   createCanvas(canvasWidth, canvasHeight);
   
   instruments.forEach((instrument, i) => {  
-    instrument.slider = createSlider(2, 10, 4);
+    instrument.slider = createSlider(2, 7, 4);
+    instrument.sliderPos = 4;
     instrument.calculatePos(i);
     instrument.triggered = false;
   });
@@ -89,11 +89,11 @@ function drawInterfaceBounds() {
   fill(0,0,0,0);
   
   // Drum select
-  rect(xs * 0.25, ys * 1, xs, ys * instruments.length * 2.5);
-  line(xs * 0.5, ys * 1.35, xs, ys * 1.35);
+  rect(xs * 0.25, ys * 1.5, xs * 1.5, ys * instruments.length * 2.25);
+  line(xs * 0.5, ys * 2, xs * 1.5, ys * 2);
   
   // Sequencer
-  rect(xs * 1.5, ys * 1, xs * 8, ys * instruments.length * 2.5);
+  rect(xs * 2, ys * 1.5, xs * (canvasXDiv * (8.4/10)), ys * instruments.length * 2.25);
   
   // BPM select
   rect(xs * 0.25, ys * 8.75, xs * 1.5, ys * 1);
@@ -107,11 +107,11 @@ function drawInterfaceLabels() {
   textAlign(CENTER, BASELINE);
   
   textSize(fontSize * 3);
-  text("Poly-Taiko-1", canvasXStep * 5, canvasYStep * 0.75);
+  text("Poly-Taiko-1", canvasXStep * (canvasXDiv/2), canvasYStep);
 
   textSize(fontSize * 1.25);
-  text("Drm Select", canvasXStep * 0.75, canvasYStep * 1.25);
-  text("Sequence", canvasXStep * 5.5, canvasYStep * 1.25);
+  text("Drm Select", canvasXStep * 1, canvasYStep * 1.8);
+  text("Sequence", canvasXStep * 8, canvasYStep * 1.8);
   text("BPM: " + bpmSlider.value(), canvasXStep, canvasYStep * 9.15);
   
   textSize(fontSize);
@@ -198,8 +198,11 @@ function draw() {
     
     // Check if the user has adjusted an instrument's time division
     let beatSliderVal = instrument.slider.value();  
-    if(instrument.beatsPerBar != beatSliderVal) {
-        //instrument.updateBeatCount(beatSliderVal);
+    if(instrument.sliderPos != beatSliderVal) {
+        instrument.bars.forEach((bar) => {
+          bar.updateBeatCount(beatSliderVal);
+          instrument.sliderPos = beatSliderVal;
+        })
     }
     
     instrument.draw();

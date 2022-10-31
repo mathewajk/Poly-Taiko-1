@@ -5,12 +5,16 @@ let globalBeats = 4;
 let interval = 0;
 let playing = false;
 
-let canvasWidth = 1600;
+let canvasWidth = 2000;
 let canvasHeight = 1000;
 let canvasMinWidth = 800;
 
-let canvasXStep = canvasWidth/10;
-let canvasYStep = canvasHeight/10;
+
+let canvasXDiv = 15;
+let canvasYDiv = 10;
+
+let canvasXStep = canvasWidth/canvasXDiv;
+let canvasYStep = canvasHeight/canvasYDiv;
 
 let baseFontSize = 18;
 let fontSize     = 18;
@@ -35,7 +39,7 @@ let drums = [
 
 function setCanvasSize() {
   canvasWidth  = windowWidth >= canvasMinWidth ? windowWidth : canvasMinWidth;
-  canvasHeight = canvasWidth * (4/4.5);
-  canvasXStep = canvasWidth/10;
-  canvasYStep = canvasHeight/10;
+  canvasHeight = canvasWidth * (2/3);
+  canvasXStep = canvasWidth/canvasXDiv;
+  canvasYStep = canvasHeight/canvasYDiv;
 }

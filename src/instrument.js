@@ -48,7 +48,7 @@ class Bar {
       
       let row = Math.floor(i / (this.beatDivision * 2))
       let col = (i % (this.beatDivision * 2));
-      let step = (canvasXStep * 4)/(this.beatDivision);
+      let step = (canvasXStep * 3)/(this.beatDivision);
       
       beat.x = this.x + canvasXStep + col * step;
       beat.y = this.y - canvasYStep/2 + row * canvasYStep/2;
@@ -63,7 +63,7 @@ class Bar {
     this.butW = canvasXStep * 0.25;
     this.butH = canvasYStep/10;
     
-    this.incButX = this.x + canvasXStep * 4;
+    this.incButX = this.x + canvasXStep * 3.5;
     this.incButY = this.y - canvasYStep/1.5;
   }
   
@@ -72,7 +72,7 @@ class Bar {
     fill(col[0], col[1], col[2], 100);
     
     rect(this.decButX, this.decButY, this.butW, this.butH);
-    rect(this.x + canvasXStep * 4, this.y - canvasYStep/1.5, canvasXStep * 0.25, canvasYStep/10);
+    rect(this.incButX, this.incButY, this.butW, this.butH);
     
     fill(50, 50, 50)
     textAlign(CENTER, BASELINE);
@@ -129,8 +129,8 @@ class Instrument {
   
   calculateBarPos() {
     this.bars.forEach((bar, i) => {
-      bar.x = this.x + (i % 2) * canvasXStep * 4;
-      bar.y = this.y + canvasYStep/3 + Math.floor(i / 2) * canvasYStep / 1.9;
+      bar.x = this.x + canvasXStep/4 + (i % 4) * canvasXStep * (canvasXDiv * 2/10);
+      bar.y = this.y + canvasYStep/2 + Math.floor(i / 4) * canvasYStep / 1.25;
       bar.calculateButtonPos();
       bar.calculateBeatPos();
     });
@@ -166,11 +166,11 @@ class Instrument {
     text(drums[this.type].name, this.x, this.y);
     
     // Separator
-    line(canvasXStep * 1.75, this.y - canvasYStep/1.6, 
-         canvasXStep * 9.25,    this.y - canvasYStep/1.6);
+    line(this.x + canvasXStep * 1.4, this.y - canvasYStep/1.6, 
+         this.x + canvasXStep * (canvasXDiv * (8.75/10)),    this.y - canvasYStep/1.6);
     
     textSize(fontSize/1.5);
-    text("Beat division: " + this.slider.value() + "s", this.x, this.y + canvasYStep);
+    text("Global division: " + this.slider.value() + "s", this.x, this.y + canvasYStep);
     
     textSize(fontSize);
     
@@ -181,8 +181,8 @@ class Instrument {
   }
   
   calculatePos(i) {
-    this.y = i * canvasYStep * 2.333 + canvasYStep * 1.9666;
-    this.x = canvasXStep * 0.75;
+    this.y = i * canvasYStep * 2 + canvasYStep * 2.65;
+    this.x = canvasXStep * 1;
     this.c = canvasXStep / 1.5;
 
     this.calculateBarPos();

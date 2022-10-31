@@ -2,7 +2,7 @@ class PlayButton {
   
   constructor() {
     
-    this.x = canvasXStep * 5;
+    this.x = canvasXStep * canvasXDiv * 5/10;
     this.y = canvasYStep * 9.25;
     this.c = canvasXStep/1.5;
     
@@ -38,8 +38,8 @@ class PlayButton {
   }
 
   resize() {
-    this.x = canvasXStep * 5;
-    this.y = canvasYStep * 9;
+    this.x = canvasXStep * canvasXDiv * 5/10;
+    this.y = canvasYStep * 9.25;
     this.c = canvasXStep/1.5;
   }
 }
