@@ -342,8 +342,8 @@ function togglePlayback() {
     
     instrument.beatPos = 0;
     instrument.barPos = 0;
-    instrument.prevBar = instrument.bars[7];
-    instrument.prevBeat = instrument.prevBar[instrument.prevBar.length];
+    instrument.prevBar = instrument.bars[instrument.bars.length-1];
+    instrument.prevBeat = instrument.prevBar[instrument.prevBar.length-1];
     instrument.interval = 0;
     instrument.triggered = false;
 
