@@ -12,7 +12,7 @@ function windowResized() {
   playButton.resize();
   
   let sliderWidth = canvasXStep;
-  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 9);
+  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 9.25);
   bpmSlider.style('width', sliderWidth + 'px');
   
   fontSize = baseFontSize * (canvasWidth/1200);
