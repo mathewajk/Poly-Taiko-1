@@ -211,7 +211,7 @@ function draw() {
             instrument.beatPos = 0;
             instrument.barPos++;
           }
-          if(instrument.barPos > 7) {
+          if(instrument.barPos > instrument.bars.length - 1) {
             instrument.barPos = 0;
           }
       }
