@@ -130,7 +130,7 @@ class Instrument {
   
   calculateBarPos() {
     this.bars.forEach((bar, i) => {
-      bar.x = this.x + canvasXStep/4 + (i % 4) * canvasXStep * (canvasXDiv * 2/10);
+      bar.x = this.x + canvasXStep/4 + (i % 4) * canvasXStep * 3;
       bar.y = this.y + canvasYStep/2 + Math.floor(i / 4) * canvasYStep / 1.25;
       bar.calculateButtonPos();
       bar.calculateBeatPos();
@@ -172,7 +172,7 @@ class Instrument {
     
     // Separator
     line(this.x + canvasXStep * 1.4, this.y - canvasYStep/1.6, 
-         this.x + canvasXStep * (canvasXDiv * (8.75/10)),    this.y - canvasYStep/1.6);
+         this.x + canvasXStep * 13,    this.y - canvasYStep/1.6);
     
     textSize(fontSize/1.5);
     text("Global division: " + this.slider.value() + "s", this.x, this.y + canvasYStep / 1.1);
@@ -198,7 +198,7 @@ class Instrument {
     }
     
     this.y = canvasYStep * 0.8 * prevLen + prevY + canvasYStep/2;
-    this.x = canvasXStep * 1;
+    this.x = canvasXStep * 3.5;
     this.c = canvasXStep / 1.5;
 
     this.calculateBarPos();

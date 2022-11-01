@@ -11,6 +11,8 @@ let bpmSlider;
 let playButton;
 let tsSlider;
 
+let xOffset;
+
 let instruments = [new Instrument(0), new Instrument(1), new Instrument(2)];
 
 let instAreaHeight = 0;
@@ -22,10 +24,12 @@ function windowResized() {
   playButton.resize();
   
   let sliderWidth = canvasXStep;
-  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 1.35);
+  xOffset = instruments[0].x - canvasXStep;
+  
+  bpmSlider.position(xOffset + canvasXStep * 0.5, canvasYStep * 1.45);
   bpmSlider.style('width', sliderWidth + 'px');
   
-  tsSlider.position(canvasXStep * 2.25, canvasYStep * 1.6);
+  tsSlider.position(xOffset + canvasXStep * 2.25, canvasYStep * 1.6);
   tsSlider.style('width', sliderWidth + 'px');
   
   fontSize = baseFontSize * (canvasWidth/1600);
@@ -152,12 +156,13 @@ function setup() {
   resizeCanvas(canvasWidth, canvasHeight);
   
   playButton.color = instruments[0].color;
+  xOffset = instruments[0].x - canvasXStep;
   
   bpmSlider = createSlider(60, 200, 120, 1);
-  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 1.35);
+  bpmSlider.position(xOffset + canvasXStep * 0.5, canvasYStep * 1.45);
   
   tsSlider = createSlider(2,10,4,1);
-  tsSlider.position(canvasXStep * 2.25, canvasYStep * 1.6);
+  tsSlider.position(xOffset + canvasXStep * 2.25, canvasYStep * 1.6);
   
   let sliderWidth = canvasXStep;
   bpmSlider.style('width', sliderWidth + 'px');
@@ -174,39 +179,39 @@ function drawInterfaceBounds() {
   
   // Drum select
   //rect(xs * 0.25, ys * 1.5, xs * 1.5, instAreaHeight);
-  line(xs * 0.5, instruments[0].y - ys/1.6, xs * 1.6, instruments[0].y - ys/1.6);
+  line(instruments[0].x - xs + xs * 0.5, instruments[0].y - ys/1.6,  instruments[0].x - xs + xs * 1.6, instruments[0].y - ys/1.6);
   
   // Sequencer
   //rect(xs * 2, ys * 1.5, xs * (canvasXDiv * (8.4/10)), instAreaHeight);
   
   for(let i=0; i < 3; i++) {
-    image(intLineH, xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1.25, xs/2, xs/10);
-    image(intLineH, xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1.25 + instAreaHeight, xs/2, xs/10);
+    image(intLineH,  instruments[0].x - xs + xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1.25, xs/2, xs/10);
+    image(intLineH,  instruments[0].x - xs + xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1.25 + instAreaHeight, xs/2, xs/10);
     
     // BPM
-    image(intLineH, xs/2 * 0.55 + xs/2 * i, ys, xs/2, xs/10);
-    image(intLineH, xs/2 * 0.55 + xs/2 * i, ys * 2, xs/2, xs/10);
+    image(intLineH,  instruments[0].x - xs + xs/2 * 0.55 + xs/2 * i, ys, xs/2, xs/10);
+    image(intLineH,  instruments[0].x - xs + xs/2 * 0.55 + xs/2 * i, ys * 2, xs/2, xs/10);
     
     // Time signature
-    image(intLineH, xs/2 * 4 + xs/2 * i, ys, xs/2, xs/10);
-    image(intLineH, xs/2 * 4 + xs/2 * i, ys * 2, xs/2, xs/10);
+    image(intLineH,  instruments[0].x - xs + xs/2 * 4 + xs/2 * i, ys, xs/2, xs/10);
+    image(intLineH,  instruments[0].x - xs + xs/2 * 4 + xs/2 * i, ys * 2, xs/2, xs/10);
   }
   
-  image(intLineV, xs * 0.25, ys, ys/10, ys);
-  image(intLineV, xs * 1.75, ys, ys/10, ys);
-  image(intLineV, xs * 2, ys, ys/10, ys);
-  image(intLineV, xs * 3.5, ys, ys/10, ys);
+  image(intLineV, instruments[0].x - xs + xs * 0.25, ys, ys/10, ys);
+  image(intLineV, instruments[0].x - xs + xs * 1.75, ys, ys/10, ys);
+  image(intLineV, instruments[0].x - xs + xs * 2, ys, ys/10, ys);
+  image(intLineV, instruments[0].x - xs + xs * 3.5, ys, ys/10, ys);
   
   for(let i=0; i < 25; i++) {
-    image(intLineH, xs * 2 + xs/2*i, instruments[0].y - ys * 1.25, xs/2, xs/10);
-    image(intLineH, xs * 2 + xs/2*i, instruments[0].y - ys * 1.25 + instAreaHeight, xs/2, xs/ 10);
+    image(intLineH,  instruments[0].x - xs + xs * 2 + xs/2*i, instruments[0].y - ys * 1.25, xs/2, xs/10);
+    image(intLineH,  instruments[0].x - xs + xs * 2 + xs/2*i, instruments[0].y - ys * 1.25 + instAreaHeight, xs/2, xs/ 10);
   }
   
   for(let i=0; i * ys/2 < instAreaHeight; i++) {
-    image(intLineV, xs * 0.25, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
-    image(intLineV, xs * 1.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
-    image(intLineV, xs * 2, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
-    image(intLineV, xs * 2 + xs/2*24.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV,  instruments[0].x - xs + xs * 0.25, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV,  instruments[0].x - xs + xs * 1.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV,  instruments[0].x - xs + xs * 2, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV,  instruments[0].x - xs + xs * 2 + xs/2*24.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
   }
   
   // BPM select
@@ -229,14 +234,14 @@ function drawInterfaceLabels() {
   //text("Poly-Taiko-1", canvasXStep * (canvasXDiv/2), canvasYStep);
 
   textSize(fontSize * 1.25);
-  text("Drm Select", canvasXStep * 1, instruments[0].y - canvasYStep * 0.85);
-  text("Sequence", canvasXStep * 8, instruments[0].y - canvasYStep * 0.85);
-  text("BPM: " + bpmSlider.value(), canvasXStep, canvasYStep * 1.35);
-  text("Time sig:\n" + tsSlider.value() + "/4", canvasXStep * 2.75, canvasYStep * 1.35);
+  text("Drm Select",  instruments[0].x, instruments[0].y - canvasYStep * 0.85);
+  text("Sequence",  instruments[0].x + canvasXStep * 7, instruments[0].y - canvasYStep * 0.85);
+  text("BPM: " + bpmSlider.value(), xOffset + canvasXStep, canvasYStep * 1.35);
+  text("Time sig:\n" + tsSlider.value() + "/4", xOffset + canvasXStep * 2.75, canvasYStep * 1.35);
   
   textSize(fontSize);
-  text("60", canvasXStep * 0.5, canvasYStep * 1.9);
-  text("200", canvasXStep * 1.5, canvasYStep * 1.9);
+  text("60",  xOffset +canvasXStep * 0.5, canvasYStep * 1.9);
+  text("200",  xOffset +canvasXStep * 1.5, canvasYStep * 1.9);
 }
 
 function draw() {
@@ -450,8 +455,8 @@ function resizeInstrumentArea() {
   setCanvasSize();
   resizeCanvas(canvasWidth, canvasHeight);
   
-  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 1.35);
-  tsSlider.position(canvasXStep * 2.25, canvasYStep * 1.6);
+  bpmSlider.position(xOffset +canvasXStep * 0.5, canvasYStep * 1.35);
+  tsSlider.position(xOffset +canvasXStep * 2.25, canvasYStep * 1.6);
 
   playButton.resize();
 }
