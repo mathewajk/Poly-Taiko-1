@@ -158,13 +158,17 @@ class Instrument {
     
     // Drum icon
     fill(this.color);
+    push();
+    noStroke();
     ellipse(this.x, this.y, this.c, this.c);
+    pop();
     
     // Drum name
     fill(0, 0, 0);
     textSize(fontSize);
     textAlign(CENTER, CENTER);
-    text(drums[this.type].name, this.x, this.y);
+    //text(drums[this.type].name, this.x, this.y);
+    image(drums[this.type].img, this.x - (this.c + this.c/4)/2, this.y - (this.c + this.c/4)/2, this.c + this.c/4, this.c + this.c/4);
     
     // Separator
     line(this.x + canvasXStep * 1.4, this.y - canvasYStep/1.6, 
@@ -184,7 +188,7 @@ class Instrument {
   
   calculatePos(i) {
     
-    let prevY = canvasYStep * 2.15;
+    let prevY = canvasYStep * 3;
     let prevLen = 0;
     
     if(i > 0){

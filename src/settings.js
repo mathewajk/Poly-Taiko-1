@@ -9,7 +9,6 @@ let canvasWidth = 2000;
 let canvasHeight = canvasWidth * (2/3);
 let canvasMinWidth = 800;
 
-
 let canvasXDiv = 15;
 let canvasYDiv = 15;
 
@@ -23,19 +22,7 @@ let globalInterval = 0;
 let globalDelta = 0;
 let globalBeatsPerBar = 4;
 
-let drums = [
-  { name: "shime", 
-    samples: [],
-  },
-  {
-     name: "nagado", 
-     samples: []
-  },
-  {
-     name: "odaiko", 
-     samples: []
-  }
-]
+let drums;
 
 function setCanvasSize() {
   canvasWidth  = windowWidth >= canvasMinWidth ? windowWidth : canvasMinWidth;

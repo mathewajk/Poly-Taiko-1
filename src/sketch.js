@@ -1,5 +1,12 @@
 let colliding = null;
 
+let don, maru, tsu, ka, maru_trig, don_trig, tsu_trig, ka_trig;
+let shime, nagado, oodaiko;
+let name, playOff, playBeat;
+let intLineH, intLineV;
+
+let beatGraphics;
+
 let bpmSlider;
 let playButton;
 let tsSlider;
@@ -15,9 +22,11 @@ function windowResized() {
   playButton.resize();
   
   let sliderWidth = canvasXStep;
-  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
+  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 1.35);
   bpmSlider.style('width', sliderWidth + 'px');
-  tsSlider.position(canvasXStep * 2.25, canvasYStep * 2.5 + instAreaHeight);
+  
+  tsSlider.position(canvasXStep * 2.25, canvasYStep * 1.6);
+  tsSlider.style('width', sliderWidth + 'px');
   
   fontSize = baseFontSize * (canvasWidth/1600);
   
@@ -41,6 +50,49 @@ function windowResized() {
 function preload(){
   
   lato = loadFont("assets/fonts/Lato-Regular.ttf");
+  
+  name     = loadImage('assets/images/name.png');
+  playOff     = loadImage('assets/images/play.png');
+  playBeat = loadImage('assets/images/play_beat.png');
+  intLineH = loadImage('assets/images/line.png');
+  intLineV = loadImage('assets/images/lineV.png');
+  
+  don  = loadImage('assets/images/don.png');
+  maru = loadImage('assets/images/maru.png');
+  tsu  = loadImage('assets/images/tsu.png');
+  ka   = loadImage('assets/images/ka.png');
+  
+  don_trig  = loadImage('assets/images/don_trig.png');
+  maru_trig = loadImage('assets/images/maru_trig.png');
+  tsu_trig  = loadImage('assets/images/tsu_trig.png');
+  ka_trig   = loadImage('assets/images/ka_trig.png');
+  
+  shime   = loadImage('assets/images/shime.png');
+  nagado  = loadImage('assets/images/naga.png');
+  oodaiko = loadImage('assets/images/oo.png');
+  
+  drums = [
+    { 
+      name: "shime",
+      img: shime,
+      samples: [],
+    },
+    {
+       name: "nagado", 
+       img: nagado,
+       samples: []
+    },
+    {
+       name: "odaiko", 
+       img: oodaiko,
+       samples: []
+    }
+  ];
+  
+  beatGraphics = {
+    "triggering": [maru_trig, don_trig, tsu_trig, ka_trig],
+    "base": [maru, don, tsu, ka]
+  }
   
   soundFormats('mp3', 'ogg');
   
@@ -102,10 +154,10 @@ function setup() {
   playButton.color = instruments[0].color;
   
   bpmSlider = createSlider(60, 200, 120, 1);
-  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
+  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 1.35);
   
   tsSlider = createSlider(2,10,4,1);
-  tsSlider.position(canvasXStep * 2.25, canvasYStep * 2.5 + instAreaHeight);
+  tsSlider.position(canvasXStep * 2.25, canvasYStep * 1.6);
   
   let sliderWidth = canvasXStep;
   bpmSlider.style('width', sliderWidth + 'px');
@@ -121,16 +173,46 @@ function drawInterfaceBounds() {
   fill(0,0,0,0);
   
   // Drum select
-  rect(xs * 0.25, ys * 1.5, xs * 1.5, instAreaHeight);
-  line(xs * 0.5, ys * 2, xs * 1.5, ys * 2);
+  //rect(xs * 0.25, ys * 1.5, xs * 1.5, instAreaHeight);
+  line(xs * 0.5, instruments[0].y - ys/1.6, xs * 1.6, instruments[0].y - ys/1.6);
   
   // Sequencer
-  rect(xs * 2, ys * 1.5, xs * (canvasXDiv * (8.4/10)), instAreaHeight);
+  //rect(xs * 2, ys * 1.5, xs * (canvasXDiv * (8.4/10)), instAreaHeight);
+  
+  for(let i=0; i < 3; i++) {
+    image(intLineH, xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1.25, xs/2, xs/10);
+    image(intLineH, xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1.25 + instAreaHeight, xs/2, xs/10);
+    
+    // BPM
+    image(intLineH, xs/2 * 0.55 + xs/2 * i, ys, xs/2, xs/10);
+    image(intLineH, xs/2 * 0.55 + xs/2 * i, ys * 2, xs/2, xs/10);
+    
+    // Time signature
+    image(intLineH, xs/2 * 4 + xs/2 * i, ys, xs/2, xs/10);
+    image(intLineH, xs/2 * 4 + xs/2 * i, ys * 2, xs/2, xs/10);
+  }
+  
+  image(intLineV, xs * 0.25, ys, ys/10, ys);
+  image(intLineV, xs * 1.75, ys, ys/10, ys);
+  image(intLineV, xs * 2, ys, ys/10, ys);
+  image(intLineV, xs * 3.5, ys, ys/10, ys);
+  
+  for(let i=0; i < 25; i++) {
+    image(intLineH, xs * 2 + xs/2*i, instruments[0].y - ys * 1.25, xs/2, xs/10);
+    image(intLineH, xs * 2 + xs/2*i, instruments[0].y - ys * 1.25 + instAreaHeight, xs/2, xs/ 10);
+  }
+  
+  for(let i=0; i * ys/2 < instAreaHeight; i++) {
+    image(intLineV, xs * 0.25, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV, xs * 1.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV, xs * 2, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV, xs * 2 + xs/2*24.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+  }
   
   // BPM select
-  rect(xs * 0.25, ys * 1.88 + instAreaHeight, xs * 1.5, ys * 1);
+  //rect(xs * 0.25, ys * 1.88 + instAreaHeight, xs * 1.5, ys * 1);
   
-  rect(xs * 2, ys * 1.88 + instAreaHeight, xs * 1.5, ys * 1);
+  //rect(xs * 2, ys * 1.88 + instAreaHeight, xs * 1.5, ys * 1);
 
 }
 
@@ -141,17 +223,20 @@ function drawInterfaceLabels() {
   textAlign(CENTER, BASELINE);
   
   textSize(fontSize * 3);
-  text("Poly-Taiko-1", canvasXStep * (canvasXDiv/2), canvasYStep);
+  image(name, canvasXStep * (canvasXDiv/2) - canvasXStep*1.5, canvasYStep - canvasXStep * 0.75, canvasXStep * 3, canvasXStep * 1.5);
+  describeElement("Title", "Poly-Taiko-1 taiko music synthesizer");
+  
+  //text("Poly-Taiko-1", canvasXStep * (canvasXDiv/2), canvasYStep);
 
   textSize(fontSize * 1.25);
-  text("Drm Select", canvasXStep * 1, canvasYStep * 1.8);
-  text("Sequence", canvasXStep * 8, canvasYStep * 1.8);
-  text("BPM: " + bpmSlider.value(), canvasXStep, canvasYStep * 2.25 + instAreaHeight);
-  text("Time signature:\n" + tsSlider.value() + "/4", canvasXStep * 2.75, canvasYStep * 2.25 + instAreaHeight);
+  text("Drm Select", canvasXStep * 1, instruments[0].y - canvasYStep * 0.85);
+  text("Sequence", canvasXStep * 8, instruments[0].y - canvasYStep * 0.85);
+  text("BPM: " + bpmSlider.value(), canvasXStep, canvasYStep * 1.35);
+  text("Time sig:\n" + tsSlider.value() + "/4", canvasXStep * 2.75, canvasYStep * 1.35);
   
   textSize(fontSize);
-  text("60", canvasXStep * 0.5, canvasYStep * 2.75 + instAreaHeight);
-  text("200", canvasXStep * 1.5, canvasYStep * 2.75 + instAreaHeight);
+  text("60", canvasXStep * 0.5, canvasYStep * 1.9);
+  text("200", canvasXStep * 1.5, canvasYStep * 1.9);
 }
 
 function draw() {
@@ -169,10 +254,7 @@ function draw() {
   globalDelta = deltaTime;
   
   if(globalBeats != tsSlider.value()) {
-    console.log(globalBeats);
     instruments.forEach((instrument, i) => {
-      console.log(instrument.bars.length);
-      console.log(tsSlider.value());
       if(instrument.bars.length == globalBeats * 2) {
        instrument.updateBarCount(tsSlider.value() * 2);
       }
@@ -205,25 +287,30 @@ function draw() {
               vol = drums[instrument.type].name == "shime"  ? 0.75 : vol;
               vol = drums[instrument.type].name == "nagado" ? 1.1  : vol;
 
-              sample.play((noteStart - globalInterval)/1000, 1, vol, 0, 1.5);
+              if(thisBeat.active == 2) {
+                vol *= 0.25;
+              }
+              sample.play((noteStart - globalInterval)/1000, 1, vol, 0, 1);
             }
           }
       
-          setTimeout(() => {        
+          let timing = (noteStart - globalInterval)/1000;
+        
+          setTimeout(() => {
             if(instrument.prevBeat) {
-              instrument.prevBeat.color = null;
+              instrument.prevBeat.triggering = false;
             }                
-            thisBeat.color = [255, 255, 255];
+            thisBeat.triggering = true;
             instrument.prevBeat = thisBeat;
-            instrument.prevBar  = thisBar;
-          }, (noteStart - globalInterval)/1000);
+            instrument.prevBar  = thisBar;           
+          }, (noteStart - globalInterval));
         
           instrument.beatPos++;
-          if(instrument.beatPos > instrument.bars[instrument.barPos].beatDivision - 1) {
+          if(instrument.beatPos == instrument.bars[instrument.barPos].beatDivision) {
             instrument.beatPos = 0;
             instrument.barPos++;
           }
-          if(instrument.barPos > instrument.bars.length - 1) {
+          if(instrument.barPos == instrument.bars.length) {
             instrument.barPos = 0;
           }
       }
@@ -264,8 +351,7 @@ function draw() {
       }
       
       bar.beats.forEach((beat) => {
-        if(mouseX >= beat.x && mouseX <= beat.x + canvasXStep/4 && 
-          mouseY >= beat.y && mouseY <= beat.y + canvasXStep/4) {
+        if(dist(mouseX, mouseY, beat.x + beat.size/2, beat.y + beat.size/2) <= beat.size/2) {
           cursor(CROSS);
           colliding = beat;
         }
@@ -280,17 +366,9 @@ function draw() {
 
   
   globalInterval += globalDelta;
-  if(globalInterval >= beatDuration) {
-    
-    if(playing) {
-      console.log(globalInterval);
-      console.log("Beat!");
-    }
-    
+  if(globalInterval >= beatDuration) {      
     globalInterval = beatDuration - globalInterval;
   }
-  
-  //console.log("Beat duration: " + beatDuration);
   playButton.draw(globalInterval);
 
 }
@@ -298,7 +376,7 @@ function draw() {
 function mouseClicked() {
   
   if(Beat.prototype.isPrototypeOf(colliding)) {
-      colliding.active = !colliding.active;
+      colliding.active = (++colliding.active) % states.length;
   }
   
   if(Instrument.prototype.isPrototypeOf(colliding)) {
@@ -352,7 +430,7 @@ function togglePlayback() {
 
     instrument.bars.forEach((bar) => {
       bar.beats.forEach((beat) => {
-        beat.color = null;
+        beat.triggering = false;
       });
     });
   });
@@ -372,8 +450,9 @@ function resizeInstrumentArea() {
   setCanvasSize();
   resizeCanvas(canvasWidth, canvasHeight);
   
-  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 2.25 + instAreaHeight);
-  tsSlider.position(canvasXStep * 2.25, canvasYStep * 2.5 + instAreaHeight);
+  bpmSlider.position(canvasXStep * 0.5, canvasYStep * 1.35);
+  tsSlider.position(canvasXStep * 2.25, canvasYStep * 1.6);
+
   playButton.resize();
 }
 

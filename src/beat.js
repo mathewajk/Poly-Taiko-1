@@ -1,13 +1,17 @@
+let states = ["", "don", "tsu", "ka"];
+
 class Beat {
   constructor(i, j) {
-    this.active = false;
-    this.setSize(canvasXStep);
+    this.active = 0;
+    this.triggering = false;
+    
+    this.setSize();
     this.i = i;
     this.j = j;
   }
   
   setSize() {
-    this.size = canvasXStep/5;
+    this.size = canvasXStep/5 * 2.5;
   }
   
   draw(i, beatsPerBar, col) {
@@ -33,12 +37,15 @@ class Beat {
     }
     
     // Beat square
-    rect(this.x, this.y, this.size, this.size);
+    //rect(this.x, this.y, this.size, this.size);
     
     // Beat number
-    fill(0, 0, 0);
-    textAlign(CENTER,CENTER);
-    text(this.i + 1 + "." + (this.j + 1), this.x + this.size/2, this.y + this.size/2);
+    //fill(0, 0, 0);
+    //textAlign(CENTER,CENTER);
+    //text(this.i + 1 + "." + (this.j + 1), this.x + this.size/2, this.y + this.size/2);
+    
+    let category = this.triggering ? "triggering" : "base";
+    image(beatGraphics[category][this.active], this.x, this.y, this.size, this.size);
   }
   
 }
