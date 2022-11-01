@@ -9,8 +9,8 @@ let canvasWidth = 2000;
 let canvasHeight = canvasWidth * (2/3);
 let canvasMinWidth = 800;
 
-let canvasXDiv = 15;
-let canvasYDiv = 15;
+let canvasXDiv = 20;
+let canvasYDiv = 20;
 
 let canvasXStep = canvasWidth/canvasXDiv;
 let canvasYStep = canvasHeight/canvasYDiv;
