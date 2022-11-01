@@ -179,39 +179,39 @@ function drawInterfaceBounds() {
   
   // Drum select
   //rect(xs * 0.25, ys * 1.5, xs * 1.5, instAreaHeight);
-  line(instruments[0].x - xs + xs * 0.5, instruments[0].y - ys/1.6,  instruments[0].x - xs + xs * 1.6, instruments[0].y - ys/1.6);
+  line(xOffset + xs * 0.5, instruments[0].y - ys/1.6,  xOffset + xs * 1.6, instruments[0].y - ys/1.6);
   
   // Sequencer
   //rect(xs * 2, ys * 1.5, xs * (canvasXDiv * (8.4/10)), instAreaHeight);
   
   for(let i=0; i < 3; i++) {
-    image(intLineH,  instruments[0].x - xs + xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1.25, xs/2, xs/10);
-    image(intLineH,  instruments[0].x - xs + xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1.25 + instAreaHeight, xs/2, xs/10);
+    image(intLineH,  xOffset + xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1.25, xs/2, xs/10);
+    image(intLineH,  xOffset + xs/2 * 0.55 + xs/2 * i, instruments[0].y - ys * 1 + instAreaHeight, xs/2, xs/10);
     
     // BPM
-    image(intLineH,  instruments[0].x - xs + xs/2 * 0.55 + xs/2 * i, ys, xs/2, xs/10);
-    image(intLineH,  instruments[0].x - xs + xs/2 * 0.55 + xs/2 * i, ys * 2, xs/2, xs/10);
+    image(intLineH,  xOffset + xs/2 * 0.55 + xs/2 * i, ys, xs/2, xs/10);
+    image(intLineH,  xOffset + xs/2 * 0.55 + xs/2 * i, ys * 2, xs/2, xs/10);
     
     // Time signature
-    image(intLineH,  instruments[0].x - xs + xs/2 * 4 + xs/2 * i, ys, xs/2, xs/10);
-    image(intLineH,  instruments[0].x - xs + xs/2 * 4 + xs/2 * i, ys * 2, xs/2, xs/10);
+    image(intLineH,  xOffset + xs/2 * 4 + xs/2 * i, ys, xs/2, xs/10);
+    image(intLineH,  xOffset + xs/2 * 4 + xs/2 * i, ys * 2, xs/2, xs/10);
   }
   
-  image(intLineV, instruments[0].x - xs + xs * 0.25, ys, ys/10, ys);
-  image(intLineV, instruments[0].x - xs + xs * 1.75, ys, ys/10, ys);
-  image(intLineV, instruments[0].x - xs + xs * 2, ys, ys/10, ys);
-  image(intLineV, instruments[0].x - xs + xs * 3.5, ys, ys/10, ys);
+  image(intLineV, xOffset + xs * 0.25, ys, ys/10, ys);
+  image(intLineV, xOffset + xs * 1.75, ys, ys/10, ys);
+  image(intLineV, xOffset + xs * 2, ys, ys/10, ys);
+  image(intLineV, xOffset + xs * 3.5, ys, ys/10, ys);
   
   for(let i=0; i < 25; i++) {
-    image(intLineH,  instruments[0].x - xs + xs * 2 + xs/2*i, instruments[0].y - ys * 1.25, xs/2, xs/10);
-    image(intLineH,  instruments[0].x - xs + xs * 2 + xs/2*i, instruments[0].y - ys * 1.25 + instAreaHeight, xs/2, xs/ 10);
+    image(intLineH,  xOffset + xs * 2 + xs/2*i, instruments[0].y - ys * 1.25, xs/2, xs/10);
+    image(intLineH,  xOffset + xs * 2 + xs/2*i, instruments[0].y - ys * 1 + instAreaHeight, xs/2, xs/ 10);
   }
   
   for(let i=0; i * ys/2 < instAreaHeight; i++) {
-    image(intLineV,  instruments[0].x - xs + xs * 0.25, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
-    image(intLineV,  instruments[0].x - xs + xs * 1.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
-    image(intLineV,  instruments[0].x - xs + xs * 2, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
-    image(intLineV,  instruments[0].x - xs + xs * 2 + xs/2*24.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV,  xOffset + xs * 0.25, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV,  xOffset + xs * 1.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV,  xOffset + xs * 2, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+    image(intLineV,  xOffset + xs * 2 + xs/2*24.75, instruments[0].y - ys * 1.25 + ys/2 * i, ys/10, ys/2);
   }
   
   // BPM select
@@ -410,6 +410,7 @@ function mouseClicked() {
 function keyPressed() {
   if (keyCode == 32) {
     togglePlayback();
+    return false;
   }
 }
 
