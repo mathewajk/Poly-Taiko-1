@@ -15,10 +15,10 @@ class PlayButton {
   draw(interval) {
   
     let buttonFill = this.color;
-    let img = playOff;
+    let img = images.playOff.img;
     
     if(playing && interval <= 100) {
-      img = playBeat;
+      img = images.playOn.img;
     }
     
     fill(buttonFill);

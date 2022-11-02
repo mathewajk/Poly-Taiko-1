@@ -1,9 +1,26 @@
 let bpm = 120.0;
 let bars = 8;
-let globalBeats = 4;
 
-let interval = 0;
+let globalBeats = 4;
+let globalInterval = 0;
+let globalDelta = 0;
+
 let playing = false;
+
+let drums = [
+    { 
+      name: "shime",
+      samples: [],
+    },
+    {
+       name: "naga", 
+       samples: []
+    },
+    {
+       name: "oo", 
+       samples: []
+    }
+];
 
 let canvasWidth = 2000;
 let canvasHeight = canvasWidth * (2/3);
@@ -17,12 +34,6 @@ let canvasYStep = canvasHeight/canvasYDiv;
 
 let baseFontSize = 18;
 let fontSize     = 18;
-
-let globalInterval = 0;
-let globalDelta = 0;
-let globalBeatsPerBar = 4;
-
-let drums;
 
 function setCanvasSize(sequence) {
   canvasWidth  = windowWidth >= canvasMinWidth ? 
@@ -46,11 +57,11 @@ function drawSeparator(x1, y1, x2, y2) {
 }
 
 function drawHLine(x, y, w, h) {
-  image(intLineH, x, y, w, h);
+  image(images.hLine.img, x, y, w, h);
 }
 
 function drawVLine(x, y, w, h) {
-  image(intLineV, x, y, w, h);
+  image(images.vLine.img, x, y, w, h);
 }
 
 function drawInterfaceBounds() {
@@ -112,7 +123,7 @@ function drawInterfaceLabels() {
   textAlign(CENTER, BASELINE);
   
   textSize(fontSize * 3);
-  image(name, canvasXStep * (canvasXDiv/2) - canvasXStep*1.5, canvasYStep - canvasXStep * 0.75, canvasXStep * 3, canvasXStep * 1.5);
+  image(images.title.img, canvasXStep * (canvasXDiv/2) - canvasXStep*1.5, canvasYStep - canvasXStep * 0.75, canvasXStep * 3, canvasXStep * 1.5);
   describeElement("Title", "Poly-Taiko-1 taiko music synthesizer");
   
   //text("Poly-Taiko-1", canvasXStep * (canvasXDiv/2), canvasYStep);

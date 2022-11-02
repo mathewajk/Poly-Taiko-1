@@ -1,10 +1,23 @@
-let don, maru, tsu, ka, maru_trig, don_trig, tsu_trig, ka_trig;
+let images = {
+  don:  {name: "don", img: null},
+  maru: {name: "maru", img: null},
+  tsu:  {name: "tsu", img: null},
+  ka:   {name: "ka", img: null},
+  maruPlay: {name: "maru_trig", img: null}, 
+  donPlay:  {name: "don_trig", img: null},
+  tsuPlay:  {name: "tsu_trig", img: null},
+  kaPlay:   {name: "ka_trig", img: null},
+  title: {name: "name", img: null},
+  playOff: {name: "play", img: null},
+  playBeat: {name: "play_beat", img: null},
+  hLine: {name: "line", img: null},
+  vLine: {name: "lineV", img: null}
+};
+
 let shime, nagado, oodaiko;
-let name, playOff, playBeat;
-let intLineH, intLineV;
 let beatGraphics;
 
-let sequence = new Sequence([new Instrument(0), new Instrument(1), new Instrument(2)]);
+let sequence;
 
 function windowResized() {
   resizeInterface(sequence);
@@ -14,48 +27,13 @@ function preload(){
   
   lato = loadFont("assets/fonts/Lato-Regular.ttf");
   
-  name     = loadImage('assets/images/name.png');
-  playOff  = loadImage('assets/images/play.png');
-  playBeat = loadImage('assets/images/play_beat.png');
-  intLineH = loadImage('assets/images/line.png');
-  intLineV = loadImage('assets/images/lineV.png');
+  Object.keys(images).forEach((key) => {
+    images[key].img = loadImage('assets/images/' + images[key].name + '.png');
+  })
   
-  don  = loadImage('assets/images/don.png');
-  maru = loadImage('assets/images/maru.png');
-  tsu  = loadImage('assets/images/tsu.png');
-  ka   = loadImage('assets/images/ka.png');
-  
-  don_trig  = loadImage('assets/images/don_trig.png');
-  maru_trig = loadImage('assets/images/maru_trig.png');
-  tsu_trig  = loadImage('assets/images/tsu_trig.png');
-  ka_trig   = loadImage('assets/images/ka_trig.png');
-  
-  shime   = loadImage('assets/images/shime.png');
-  nagado  = loadImage('assets/images/naga.png');
-  oodaiko = loadImage('assets/images/oo.png');
-  
-  drums = [
-    { 
-      name: "shime",
-      img: shime,
-      samples: [],
-    },
-    {
-       name: "nagado", 
-       img: nagado,
-       samples: []
-    },
-    {
-       name: "odaiko", 
-       img: oodaiko,
-       samples: []
-    }
-  ];
-  
-  beatGraphics = {
-    "triggering": [maru_trig, don_trig, tsu_trig, ka_trig],
-    "base": [maru, don, tsu, ka]
-  }
+  drums.forEach((drum) => {
+    drum.img = loadImage('assets/images/' + drum.name + '.png');
+  });
   
   soundFormats('mp3', 'ogg');
   
@@ -86,8 +64,9 @@ function preload(){
 
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
-  resizeInterface(sequence);
-  
+  sequence = new Sequence([new Instrument(0),
+                           new Instrument(1), 
+                           new Instrument(2)]);
   sequence.setup();
   resizeInterface(sequence); 
 }

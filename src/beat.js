@@ -1,4 +1,4 @@
-let states = ["", "don", "tsu", "ka"];
+let states = ["maru", "don", "tsu", "ka"];
 
 class Beat {
   constructor(i, j) {
@@ -36,16 +36,8 @@ class Beat {
       }
     }
     
-    // Beat square
-    //rect(this.x, this.y, this.size, this.size);
-    
-    // Beat number
-    //fill(0, 0, 0);
-    //textAlign(CENTER,CENTER);
-    //text(this.i + 1 + "." + (this.j + 1), this.x + this.size/2, this.y + this.size/2);
-    
-    let category = this.triggering ? "triggering" : "base";
-    image(beatGraphics[category][this.active], this.x, this.y, this.size, this.size);
+    let category = this.triggering ? "Play" : "";
+    image(images[states[this.active] + category].img, this.x, this.y, this.size, this.size);
   }
   
 }
