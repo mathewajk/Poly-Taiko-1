@@ -93,7 +93,6 @@ class Sequence {
           let noteStart = noteDuration * (instrument.beatPos);
   
           if(globalInterval >= noteStart - prevDuration && globalInterval <= noteStart) {         
-  
               if(thisBeat.active) {
   
                 let samples = drums[instrument.type].samples; 
@@ -146,7 +145,7 @@ class Sequence {
   
         if(instrument.tsSliderPos != tsSliderVal && instrument.bars.length != tsSliderVal * 2) {
          instrument.updateBarCount(tsSliderVal * 2);
-         this.resize();
+         resizeInterface(this);
          instrument.tsSliderPos = tsSliderVal;
         }
   

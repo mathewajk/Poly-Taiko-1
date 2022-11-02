@@ -49,6 +49,7 @@ function setCanvasSize(sequence) {
 function resizeInterface(sequence) {
   setCanvasSize(sequence);
   sequence.resize();
+  setCanvasSize(sequence);
   resizeCanvas(canvasWidth, canvasHeight);
 }
 
