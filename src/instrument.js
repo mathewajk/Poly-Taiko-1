@@ -186,15 +186,15 @@ class Instrument {
     
   }
   
-  calculatePos(i) {
+  calculatePos(sequence, i) {
     
     let prevY = canvasYStep * 3;
     let prevLen = 0;
     
     if(i > 0){
-      prevY = instruments[i-1].y;
-      let offset = instruments[i-1].bars.length % 4 == 0 ? 0 : 1;
-      prevLen = Math.max(Math.floor(instruments[i-1].bars.length / 4) + offset, 2);
+      prevY = sequence.instruments[i-1].y;
+      let offset = sequence.instruments[i-1].bars.length % 4 == 0 ? 0 : 1;
+      prevLen = Math.max(Math.floor(sequence.instruments[i-1].bars.length / 4) + offset, 2);
     }
     
     this.y = canvasYStep * 0.8 * prevLen + prevY + canvasYStep/2;
@@ -203,12 +203,14 @@ class Instrument {
 
     this.calculateBarPos();
     
-    this.slider.position(this.x - canvasXStep/3, this.y + canvasYStep/2.5);
-    this.tsSlider.position(this.x - canvasXStep/3, this.y + canvasYStep);
+    if(this.slider != null) {
+      this.slider.position(this.x - canvasXStep/3, this.y + canvasYStep/2.5);
+      this.tsSlider.position(this.x - canvasXStep/3, this.y + canvasYStep);
     
-    let sliderWidth = canvasXStep * (2/3);
-    this.slider.style('width', sliderWidth + 'px');
-    this.tsSlider.style('width', sliderWidth + 'px');
+      let sliderWidth = canvasXStep * (2/3);
+      this.slider.style('width', sliderWidth + 'px');
+      this.tsSlider.style('width', sliderWidth + 'px');
+    }
   }
   
 }
