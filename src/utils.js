@@ -51,6 +51,7 @@ function resizeInterface(sequence) {
   sequence.resize();
   setCanvasSize(sequence);
   resizeCanvas(canvasWidth, canvasHeight);
+  draw();
 }
 
 function drawSeparator(x1, y1, x2, y2) {
