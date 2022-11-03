@@ -51,10 +51,25 @@ function setCanvasSize(sequence) {
   fontSize = baseFontSize * (canvasWidth/1600);
 }
 
+function resizeSlider(slider, x, y, width) {
+  slider.position(x, y);
+  slider.style('width', width + 'px');
+}
+
 function resizeInterface(sequence) {
-  setCanvasSize(sequence);
+  
   sequence.resize();
-  setCanvasSize(sequence);
+  
+  setCanvasSize(sequence); 
+  let xs = canvasXStep;
+  let ys = canvasYStep;
+  let xo = sequence.xOffset;
+  
+  playButton.resize(sequence.height);
+  
+  resizeSlider(bpmSlider, xo + xs * 0.5, ys * 1.45, xs);
+  resizeSlider(tsSlider, xo + xs * 2.25, ys * 1.6, xs); 
+  
   resizeCanvas(canvasWidth, canvasHeight);
   draw();
 }
@@ -138,8 +153,8 @@ function drawInterfaceLabels() {
   textSize(fontSize * 1.25);
   text("Drm Select",  sequence.xOffset + xs, sequence.yOffset - ys * 0.85);
   text("Sequence",  sequence.xOffset + xs * 7, sequence.yOffset - ys * 0.85);
-  text("BPM: " + sequence.bpmSlider.value(), sequence.xOffset + xs, ys * 1.35);
-  text("Time sig:\n" + sequence.tsSlider.value() + "/4", sequence.xOffset + xs * 2.75, ys * 1.35);
+  text("BPM: " + bpmSlider.value(), sequence.xOffset + xs, ys * 1.35);
+  text("Time sig:\n" + tsSlider.value() + "/4", sequence.xOffset + xs * 2.75, ys * 1.35);
   
   textSize(fontSize);
   text("60",  sequence.xOffset + xs * 0.5, ys * 1.9);

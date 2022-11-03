@@ -7,11 +7,6 @@ class Sequence {
       this.height = 0;
       this.xOffset = 0;
       this.yOffset = 0;
-      
-      this.bpmSlider = null;
-      this.tsSlider = null;
-      
-      this.playButton = new PlayButton();
     }
     
     setup() {
@@ -30,11 +25,7 @@ class Sequence {
       });
       
       this.calculateHeight();
-      
-      this.playButton.color = this.instruments[0].color;
-          
-      this.bpmSlider = createSlider(60, 200, 120, 1);
-      this.tsSlider = createSlider(2,10,4,1);
+  
     }
     
     calculateHeight() {
@@ -50,10 +41,7 @@ class Sequence {
       this.height += ys;
     }
     
-    resizeSlider(slider, x, y, width) {
-      slider.position(x, y);
-      slider.style('width', width + 'px');
-    }
+    
     
     resize() {
       
@@ -67,13 +55,6 @@ class Sequence {
       
       this.xOffset = this.instruments[0].x - xs;
       this.yOffset = this.instruments[0].y;
-  
-      if(this.bpmSlider != null && this.tsSlider != null) {
-        this.resizeSlider(this.bpmSlider, this.xOffset + xs * 0.5, ys * 1.45, xs);
-        this.resizeSlider(this.tsSlider, this.xOffset + xs * 2.25, ys * 1.6, xs);
-      }
-      
-      this.playButton.resize(this.height);
     }
     
     draw(bpm, globalInterval, playing) {

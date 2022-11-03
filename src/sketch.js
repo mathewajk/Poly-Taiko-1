@@ -14,8 +14,10 @@ hLine: {name: "line", img: null},
 vLine: {name: "lineV", img: null}
 };
 
-let shime, nagado, oodaiko;
-let beatGraphics;
+// Global controls
+let bpmSlider = null;
+let tsSlider = null;
+let playButton = new PlayButton();
 
 let sequence;
 
@@ -63,11 +65,20 @@ loadSound('assets/samples/odaiko_005')
 }
 
 function setup() {
+
+bpmSlider = createSlider(60, 200, 120, 1);
+tsSlider = createSlider(2,10,4,1);
+
 createCanvas(canvasWidth, canvasHeight);
 sequence = new Sequence([new Instrument(0),
                       new Instrument(1), 
                       new Instrument(2)]);
 sequence.setup();
+
+playButton = new PlayButton();
+playButton.color = sequence.instruments[0].color;
+
+setCanvasSize(sequence); 
 resizeInterface(sequence); 
 }
 
@@ -79,30 +90,29 @@ drawInterfaceLabels()
 
 cursor(ARROW);
 
-let bpm = sequence.bpmSlider.value();
+let bpm = bpmSlider.value();
 let beatDuration = 60.0/bpm * 1000;
 globalDelta = deltaTime;
 
 sequence.draw(bpm, globalInterval, playing);
 
-if(playing) {
-if(globalBeats != sequence.tsSlider.value()) {
- sequence.instruments.forEach((instrument, i) => {
-   if(instrument.bars.length == globalBeats * 2) {
-    instrument.updateBarCount(tsSlider.value() * 2);
-   }
- });
- resize();
- globalBeats = sequence.tsSlider.value();
+if(globalBeats != tsSlider.value()) {
+console.log("Check")
+sequence.instruments.forEach((instrument, i) => {
+instrument.updateBarCount(tsSlider.value() * 2);
+});
+globalBeats = tsSlider.value();
+resizeInterface(sequence);
 }
 
+if(playing) {
 globalInterval += globalDelta;
 if(globalInterval >= beatDuration) {      
  globalInterval = beatDuration - globalInterval;
 }
 }
 
-sequence.playButton.draw(globalInterval);
+playButton.draw(globalInterval);
 
 }
 
@@ -112,7 +122,7 @@ if(sequence.colliding != null) {
 sequence.handleCollision();
 }
 
-if(dist(mouseX, mouseY, sequence.playButton.x, sequence.playButton.y) <= sequence.playButton.c/2) {
+if(dist(mouseX, mouseY, playButton.x, playButton.y) <= playButton.c/2) {
 togglePlayback();
 }
 
@@ -128,8 +138,8 @@ return false;
 function togglePlayback() {
 
 playing = !playing;
-toggleSlider(sequence.bpmSlider);
-toggleSlider(sequence.tsSlider);
+toggleSlider(bpmSlider);
+toggleSlider(tsSlider);
 
 globalInterval = 0;
 
