@@ -200,6 +200,33 @@ class Instrument {
     
   }
   
+  incrementPos() {
+    this.beatPos++;
+    if(this.beatPos == this.bars[this.barPos].beatDivision) {
+      this.beatPos = 0;
+      this.barPos++;
+    }
+    if(this.barPos == this.bars.length) {
+      this.barPos = 0;
+    }
+  }
+  
+  getPrev() {
+    let prevBeat = this.beatPos - 1;
+    let prevBar = this.barPos;
+    
+    if(prevBeat < 0) {
+      prevBar = this.barPos - 1;
+      if(prevBar < 0) {
+        prevBar = this.bars.length - 1;
+      }
+      prevBeat = this.bars[prevBar].beats.length - 1;
+    }
+    
+    return([this.bars[prevBar], this.bars[prevBar].beats[prevBeat]]);
+    
+  }
+  
   calculatePos(sequence, i) {
     
     let prevY = canvasYStep * 3;

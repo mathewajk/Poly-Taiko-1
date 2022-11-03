@@ -44,6 +44,26 @@ class Beat {
     this.cycle();
   }
   
+  handleBeat(thisBeat, instrument, timing) {
+    
+    if(!this.active) { return; }
+    
+    let samples = drums[instrument.type].samples; 
+    
+    if(samples.length) {
+      let sample = samples[Math.floor(random(samples.length))];
+
+      let vol = 1;
+      vol = drums[instrument.type].name == "shime"  ? 0.75 : vol;
+      vol = drums[instrument.type].name == "nagado" ? 1.1  : vol;
+
+      if(this.active == 2) {
+        vol *= 0.25;
+      }
+      sample.play(timing/1000, 1, vol, 0, 1);
+    }
+  }
+  
   cycle() {
     this.active = (++this.active) % states.length;
   }

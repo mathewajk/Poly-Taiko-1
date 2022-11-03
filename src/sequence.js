@@ -67,49 +67,22 @@ class Sequence {
   
           let thisBar = instrument.bars[instrument.barPos];
           let thisBeat = thisBar.beats[instrument.beatPos];
-  
+          let [prevBar, prevBeat] = instrument.getPrev();
+          
           let noteDuration = (60.0/bpm) * (1.0 / thisBar.beatDivision) * 1000;
-          let prevDuration = (60.0/bpm) * (1.0 / instrument.prevBar.beatDivision) * 1000;
+          let prevDuration = (60.0/bpm) * (1.0 / prevBar.beatDivision) * 1000;
   
           let noteStart = noteDuration * (instrument.beatPos);
   
-          if(globalInterval >= noteStart - prevDuration && globalInterval <= noteStart) {         
-              if(thisBeat.active) {
+          if(globalInterval >= noteStart - prevDuration && globalInterval <= noteStart) {
+            thisBeat.handleBeat(instrument, thisBeat, noteStart - globalInterval);
+          
+            setTimeout(() => {
+              prevBeat.triggering = false;              
+              thisBeat.triggering = true;          
+            }, (noteStart - globalInterval));
   
-                let samples = drums[instrument.type].samples; 
-                if(samples.length) {
-                  let sample = samples[Math.floor(random(samples.length))];
-  
-                  let vol = 1;
-                  vol = drums[instrument.type].name == "shime"  ? 0.75 : vol;
-                  vol = drums[instrument.type].name == "nagado" ? 1.1  : vol;
-  
-                  if(thisBeat.active == 2) {
-                    vol *= 0.25;
-                  }
-                  sample.play((noteStart - globalInterval)/1000, 1, vol, 0, 1);
-                }
-              }
-  
-              let timing = (noteStart - globalInterval)/1000;
-  
-              setTimeout(() => {
-                if(instrument.prevBeat) {
-                  instrument.prevBeat.triggering = false;
-                }                
-                thisBeat.triggering = true;
-                instrument.prevBeat = thisBeat;
-                instrument.prevBar  = thisBar;           
-              }, (noteStart - globalInterval));
-  
-              instrument.beatPos++;
-              if(instrument.beatPos == instrument.bars[instrument.barPos].beatDivision) {
-                instrument.beatPos = 0;
-                instrument.barPos++;
-              }
-              if(instrument.barPos == instrument.bars.length) {
-                instrument.barPos = 0;
-              }
+            instrument.incrementPos();
           }
         }
   
