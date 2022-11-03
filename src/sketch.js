@@ -117,7 +117,7 @@ function mouseClicked() {
   }
   
   if(Bar.prototype.isPrototypeOf(sequence.colliding)) {
-      if(mouseX >= sequence.colliding.decButX && mouseX <= sequence.colliding.decButX + colliding.butW && 
+      if(mouseX >= sequence.colliding.decButX && mouseX <= sequence.colliding.decButX + sequence.colliding.butW && 
           mouseY >= sequence.colliding.decButY && mouseY <= sequence.colliding.decButY + sequence.colliding.butH) {
           sequence.colliding.updateBeatCount(sequence.colliding.beats.length - 1);
       }
