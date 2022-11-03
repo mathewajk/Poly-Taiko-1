@@ -40,4 +40,11 @@ class Beat {
     image(images[states[this.active] + category].img, this.x, this.y, this.size, this.size);
   }
   
+  handleCollision() {
+    this.cycle();
+  }
+  
+  cycle() {
+    this.active = (++this.active) % states.length;
+  }
 }

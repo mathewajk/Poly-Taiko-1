@@ -138,6 +138,7 @@ class Sequence {
   
         if(instrument.sliderPos != beatSliderVal) {
             instrument.bars.forEach((bar) => {
+              instrument.beatDivision = beatSliderVal;
               bar.updateBeatCount(beatSliderVal);
               instrument.sliderPos = beatSliderVal;
             });
@@ -179,4 +180,32 @@ class Sequence {
         }  
       });
     }
+    
+    checkCollisions() {
+      
+    }
+    
+    handleCollision() {
+      
+      let collider = sequence.colliding;
+      
+      if(Beat.prototype.isPrototypeOf(collider) || 
+         Instrument.prototype.isPrototypeOf(collider)) {
+        collider.handleCollision();
+      }
+    
+      if(Bar.prototype.isPrototypeOf(collider)) {
+        if(rectCollision(mouseX, mouseY, collider.decButX, collider.decButY, collider.butW, collider.butH)) {
+            sequence.colliding.updateBeatCount(sequence.colliding.beats.length - 1);
+        }
+        
+       if(mouseX >= sequence.colliding.incButX && mouseX <= sequence.colliding.incButX + sequence.colliding.butW && 
+            mouseY >= sequence.colliding.incButY && mouseY <= sequence.colliding.incButY + sequence.colliding.butH) {
+            cursor(CROSS);
+            sequence.colliding.updateBeatCount(sequence.colliding.beats.length + 1);
+        }
+       }
+    }
+    
+    
   }

@@ -67,6 +67,12 @@ class Bar {
     this.incButY = this.y - canvasYStep/1.5;
   }
   
+  handleCollision() {
+    if(rectCollision(mouseX, mouseY, this.decButX, this.decButY, this.butW, this.butH)) {
+        this.updateBeatCount(this.beats.length - 1);
+      }
+  }
+  
   draw(i, col) {
     
     fill(col[0], col[1], col[2], 100);
@@ -128,6 +134,14 @@ class Instrument {
     this.prevBar = this.bars[7];
   }
   
+  cycle() {
+    this.type = (++this.type) % drums.length; 
+  }
+  
+  handleCollision() {
+    this.cycle();
+  }
+  
   calculateBarPos() {
     this.bars.forEach((bar, i) => {
       bar.x = this.x + canvasXStep/4 + (i % 4) * canvasXStep * 3;
@@ -172,7 +186,7 @@ class Instrument {
     
     // Separator
     line(this.x + canvasXStep * 1.4, this.y - canvasYStep/1.6, 
-         this.x + canvasXStep * 13,    this.y - canvasYStep/1.6);
+         this.x + canvasXStep * 13,  this.y - canvasYStep/1.6);
     
     textSize(fontSize/1.5);
     text("Global division: " + this.slider.value() + "s", this.x, this.y + canvasYStep / 1.1);
@@ -197,7 +211,7 @@ class Instrument {
       prevLen = Math.max(Math.floor(sequence.instruments[i-1].bars.length / 4) + offset, 2);
     }
     
-    this.y = canvasYStep * 0.8 * prevLen + prevY + canvasYStep/2;
+    this.y = canvasYStep * prevLen * 0.8 + prevY + canvasYStep/2;
     this.x = canvasXStep * 3.5;
     this.c = canvasXStep / 1.5;
 
