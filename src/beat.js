@@ -47,15 +47,25 @@ class Beat {
   handleBeat(instrument, timing) {
     
     if(!this.active) { return; }
-    let samples = drums[instrument.type].samples; 
+    
+    let samples;
+    if(states[this.active] == "ka") {
+      samples = drums[instrument.type].samples_ka; 
+    } else {
+      samples = drums[instrument.type].samples; 
+    }
     
     if(samples.length) {
       let sample = samples[Math.floor(random(samples.length))];
 
       let vol = 1;
-      vol = drums[instrument.type].name == "shime"  ? 0.75 : vol;
-      vol = drums[instrument.type].name == "nagado" ? 1.1  : vol;
-
+      if(states[this.active] != "ka") {
+        vol = drums[instrument.type].name == "shime"  ? 0.75 : vol;
+        vol = drums[instrument.type].name == "nagado" ? 1.1  : vol;
+      } else {
+        vol *= 0.5;
+      }
+      
       if(this.active == 2) {
         vol *= 0.25;
       }
