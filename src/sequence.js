@@ -30,7 +30,7 @@ class Sequence {
       let offset = instrument.bars.length % 4 == 0 ? 0 : 1;
       let rows = Math.floor(instrument.bars.length / 4) + offset;
       rows = Math.max(rows, 2);
-      this.height += ys * 0.8 * rows + ys/2;
+      this.height += ys * 0.9 * rows + ys/2;
     });
     this.height += ys;
   }
