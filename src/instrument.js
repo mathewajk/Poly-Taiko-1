@@ -1,3 +1,5 @@
+let presets = ["-none-", "don - 4", "don kon - 4", "doko doko - 4", "don doko - 4", "doko don - 4", "do kon ko - 4", "don - 8", "don kon - 8", "doko doko - 8", "don doko - 8", "doko don - 8", "do kon ko - 8"];
+
 class Bar {
   
   constructor(beatDivision, i, x, y) {
@@ -112,6 +114,8 @@ class Instrument {
     this.i = type;
     this.type = type;
     
+    this.preset = 0;
+    
     this.beatDivision = 4;
     this.bars  = [];
     
@@ -138,6 +142,143 @@ class Instrument {
     this.type = (++this.type) % drums.length; 
   }
   
+  cyclePreset() {
+    this.preset = (++this.preset) % presets.length;
+    this.applyPreset();
+  }
+  
+  applyPreset() {
+    if(presets[this.preset] == "-none-") {
+      this.bars.forEach((bar) => {
+        bar.beats.forEach((beat, i) => {
+         beat.active = 0; 
+        });
+      });
+    }
+    
+    if(presets[this.preset] == "don - 4") {
+      this.bars.forEach((bar, i) => {
+        bar.beats.forEach((beat, j) => {
+         beat.active = (i % 2 == 0 && j == 0) ? 1 : 0;
+        });
+      });
+    }
+    
+    if(presets[this.preset] == "don doko - 4") {
+      this.bars.forEach((bar, i) => {
+        bar.beats.forEach((beat, j) => {
+          beat.active = 0;
+          if(j == 0) {
+            beat.active = 1;
+          }
+          if(i % 2 == 1) {
+            if(j == Math.floor(bar.beats.length/2)) {
+              beat.active = 1;
+            }
+          }
+        });
+      });
+    }
+    
+    if(presets[this.preset] == "doko don - 4") {
+      this.bars.forEach((bar, i) => {
+        bar.beats.forEach((beat, j) => {
+          beat.active = 0;
+          if(j == 0) {
+            beat.active = 1;
+          }
+          if(i % 2 == 0) {
+            if(j == Math.floor(bar.beats.length/2)) {
+              beat.active = 1;
+            }
+          }
+        });
+      });
+    }
+    
+        if(presets[this.preset] == "doko don - 4") {
+      this.bars.forEach((bar, i) => {
+        bar.beats.forEach((beat, j) => {
+          beat.active = 0;
+          if(i % 2 == 0) {
+            if(j == 0) {
+              beat.active = 1;
+            }
+          }
+          if(j == Math.floor(bar.beats.length/2)) {
+              beat.active = 1;
+            }
+        });
+      });
+    }
+    
+    if(presets[this.preset] == "don - 8" || presets[this.preset] == "don kon - 4") {
+      this.bars.forEach((bar) => {
+        bar.beats.forEach((beat, i) => {
+          beat.active = i == 0 ? 1 : 0; 
+        });
+      });
+    }
+    
+    if(presets[this.preset] == "doko doko - 8") {
+      this.bars.forEach((bar) => {
+        bar.beats.forEach((beat, i) => {
+         beat.active = 1; 
+        });
+      });
+    }
+     
+    if(presets[this.preset] == "don doko - 8") {
+      this.bars.forEach((bar) => {
+        bar.beats.forEach((beat, i) => {
+          beat.active = 0;
+          if(i == 0) {
+            beat.active = 1;
+          }
+          if(i >= bar.beats.length/2) {
+            beat.active = 1;
+          }
+        });
+      });
+    }
+    
+    if(presets[this.preset] == "doko don - 8") {
+      this.bars.forEach((bar) => {
+        bar.beats.forEach((beat, i) => {
+          beat.active = 0;
+          if(i < bar.beats.length * 0.75) {
+            beat.active = 1;
+          }
+        });
+      });
+    }
+    
+    if(presets[this.preset] == "do kon ko - 8") {
+      this.bars.forEach((bar) => {
+        bar.beats.forEach((beat, i) => {
+          beat.active = 0;
+          if(i == bar.beats.length - 1) {
+            beat.active = 1;
+          }
+          if(i < bar.beats.length/2) {
+            beat.active = 1;
+          }
+        });
+      });
+    }
+    
+    if(presets[this.preset] == "don kon - 8" || presets[this.preset] == "doko doko - 4") {
+      this.bars.forEach((bar) => {
+        bar.beats.forEach((beat, i) => {
+          if(i == 0 || (i % bar.beats.length == Math.floor(bar.beats.length/2))) {
+            beat.active = 1;
+          } else {beat.active = 0;}
+        });
+      });
+    }
+    
+  }
+  
   checkCollisions() {
     if(rectCollision(mouseX, mouseY, this.x - canvasXStep/1.5, this.y + canvasYStep/2, canvasXStep/3, canvasXStep/3)) {
       if(this.beatDivision > 2) {
@@ -162,11 +303,17 @@ class Instrument {
     if(rectCollision(mouseX, mouseY, this.x - canvasXStep/1.5, this.y + canvasYStep, canvasXStep/3, canvasXStep/3)) {
       this.updateBarCount(this.bars.length - 2);
       resizeInterface();
+      return;
     }
 
     if(rectCollision(mouseX, mouseY, this.x + canvasXStep/2, this.y + canvasYStep, canvasXStep/3, canvasXStep/3)) {
       this.updateBarCount(this.bars.length + 2);
       resizeInterface();
+      return;
+    }
+    
+    if(rectCollision(mouseX, mouseY, this.x - canvasXStep/1.5, this.y + canvasYStep * 1.5, canvasXStep * 1.5, canvasXStep/3)) {
+      this.cyclePreset();
     }
   }
   
@@ -234,13 +381,21 @@ class Instrument {
     
     rect(this.x - canvasXStep/1.5, this.y + canvasYStep, canvasXStep/3, canvasXStep/3);
     rect(this.x + canvasXStep/2, this.y + canvasYStep, canvasXStep/3, canvasXStep/3);
+    
+    rect(this.x - canvasXStep/1.5, this.y + canvasYStep * 1.5, canvasXStep * 1.5, canvasXStep/3);
+    
     pop();
     
     // Drum name
     fill(0, 0, 0);
-    textSize(fontSize * 1.5);
     textAlign(CENTER, CENTER);
     
+    textFont(edo);
+    textSize(fontSize * 0.9);
+    text(presets[this.preset], this.x - canvasXStep/1.5 + canvasXStep * 1.5/2, this.y + canvasYStep * 1.5 + canvasXStep/6);
+    
+    textSize(fontSize * 1.5);
+    textFont(lato);
     text("-", this.x - canvasXStep/1.5 + canvasXStep/6, this.y + canvasYStep/2.25 + canvasXStep/6);
     text("+", this.x + canvasXStep/2 + canvasXStep/6, this.y + canvasYStep/2.25 + canvasXStep/6);
     
@@ -314,7 +469,7 @@ class Instrument {
       prevLen = Math.max(Math.floor(sequence.instruments[i-1].bars.length / 4) + offset, 2);
     }
     
-    this.y = canvasYStep * prevLen + prevY + canvasYStep/2;
+    this.y = canvasYStep * 1.1 * prevLen + prevY + canvasYStep/2;
     this.x = canvasXStep * 3.5;
     this.c = canvasXStep / 1.5;
 
