@@ -15,11 +15,13 @@ vLine: {name: "lineV", img: null}
 };
 
 // Global controls
-let bpmSlider = null;
-let tsSlider = null;
 let playButton = new PlayButton();
+let sequences = [];
 
+let sequencei;
 let sequence;
+
+let mouseFrames = 0;
 
 function windowResized() {
 resizeInterface(sequence);
@@ -28,6 +30,7 @@ resizeInterface(sequence);
 function preload(){
 
 lato = loadFont("assets/fonts/Lato-Regular.ttf");
+edo = loadFont("assets/fonts/edo.ttf");
 
 Object.keys(images).forEach((key) => {
 images[key].img = loadImage('assets/images/' + images[key].name + '.png');
@@ -47,12 +50,26 @@ loadSound('assets/samples/shime_004'),
 loadSound('assets/samples/shime_005')
 ];
 
+drums[0].samples_ka = [
+loadSound('assets/samples/shime_ka_001'),
+loadSound('assets/samples/shime_ka_002'),
+loadSound('assets/samples/shime_ka_003'),
+loadSound('assets/samples/shime_ka_004')
+];
+
 drums[1].samples = [
 loadSound('assets/samples/nagado_001'),
 loadSound('assets/samples/nagado_002'),
 loadSound('assets/samples/nagado_003'),
 loadSound('assets/samples/nagado_004'),
 loadSound('assets/samples/nagado_005')
+];
+
+drums[1].samples_ka = [
+loadSound('assets/samples/nagado_ka_001'),
+loadSound('assets/samples/nagado_ka_002'),
+loadSound('assets/samples/nagado_ka_003'),
+loadSound('assets/samples/nagado_ka_004')
 ];
 
 drums[2].samples = [
@@ -62,18 +79,30 @@ loadSound('assets/samples/odaiko_003'),
 loadSound('assets/samples/odaiko_004'),
 loadSound('assets/samples/odaiko_005')
 ];
+
+drums[2].samples_ka = [
+loadSound('assets/samples/odaiko_ka_001'),
+loadSound('assets/samples/odaiko_ka_002'),
+loadSound('assets/samples/odaiko_ka_003'),
+loadSound('assets/samples/odaiko_ka_004')
+];
 }
 
 function setup() {
 
-bpmSlider = createSlider(60, 200, 120, 1);
-tsSlider = createSlider(2,10,4,1);
+textFont(lato);
 
 createCanvas(canvasWidth, canvasHeight);
-sequence = new Sequence([new Instrument(0),
+
+for(let i = 0; i < 8; i++) {
+let seq = new Sequence([new Instrument(0),
                       new Instrument(1), 
                       new Instrument(2)]);
-sequence.setup();
+sequences.push(seq);
+}
+
+sequencei = 0;
+sequence = sequences[0];
 
 playButton = new PlayButton();
 playButton.color = sequence.instruments[0].color;
@@ -90,20 +119,10 @@ drawInterfaceLabels()
 
 cursor(ARROW);
 
-let bpm = bpmSlider.value();
 let beatDuration = 60.0/bpm * 1000;
 globalDelta = deltaTime;
 
 sequence.draw(bpm, globalInterval, playing);
-
-if(globalBeats != tsSlider.value()) {
-console.log("Check")
-sequence.instruments.forEach((instrument, i) => {
-instrument.updateBarCount(tsSlider.value() * 2);
-});
-globalBeats = tsSlider.value();
-resizeInterface(sequence);
-}
 
 if(playing) {
 globalInterval += globalDelta;
@@ -113,10 +132,84 @@ if(globalInterval >= beatDuration) {
 }
 
 playButton.draw(globalInterval);
+checkCollisions();
+}
+
+function changeSequence(i) {
+
+let delay = !playing ? 0 : 60.0/bpm * 1000 - globalInterval;
+
+sequence.instruments.forEach((instrument) => {
+instrument.reset();
+setTimeout(() => {
+ instrument.turnOff();
+}, delay);
+});
+
+sequencei = i;
+sequence = sequences[i];
+sequence.setup();
+resizeInterface();
 
 }
 
+function checkCollisions() {
+let xo = sequence.xOffset;
+let xs = canvasXStep;
+let ys = canvasYStep;
+
+if(rectCollision(mouseX, mouseY, xo + xs * 2.75, ys * 1.5, xs/3, xs/3))
+{
+cursor(CROSS);
+}
+
+if(rectCollision(mouseX, mouseY, xo + xs * 4, ys * 1.5, xs/3, xs/3)) {
+cursor(CROSS);
+}
+
+if(rectCollision(mouseX, mouseY, xo + xs * 0.5, ys * 1.5, xs/3, xs/3)) {
+cursor(CROSS);
+if(mouseIsPressed) {
+ mouseFrames++;
+ if(mouseFrames >= 10) bpm--;
+} else { mouseFrames = 0 }
+}
+
+if(rectCollision(mouseX, mouseY, xo + xs * 1.75, ys * 1.5, xs/3, xs/3)) {
+cursor(CROSS);
+if(mouseIsPressed) {
+ mouseFrames++;
+ if(mouseFrames >= 10) bpm++;
+} else { mouseFrames = 0 }
+}
+
+for(let i=0; i < 8; i++) {
+if(rectCollision(mouseX, mouseY, xo + xs * 9.9 + xs/1.5 * i, ys * 1.75, xs/3, xs/3)) {
+cursor(CROSS);
+}
+}
+}
+
 function mouseClicked() {
+
+let xo = sequence.xOffset;
+let xs = canvasXStep;
+let ys = canvasYStep;
+let beatDuration = 60.0/bpm * 1000;
+
+for(let i=0; i < 8; i++) {
+let delay = !playing ? 0 : 60.0/bpm * 1000 - globalInterval;
+if(rectCollision(mouseX, mouseY, xo + xs * 9.9 + xs/1.5 * i, ys * 1.75, xs/3, xs/3)) {
+ setTimeout(() => {  
+   changeSequence(i);
+ }, delay);
+ return;
+}
+}
+
+sequence.instruments.forEach((instrument) => {
+instrument.checkCollisions();
+});
 
 if(sequence.colliding != null) {
 sequence.handleCollision();
@@ -124,6 +217,36 @@ sequence.handleCollision();
 
 if(dist(mouseX, mouseY, playButton.x, playButton.y) <= playButton.c/2) {
 togglePlayback();
+}
+
+if(rectCollision(mouseX, mouseY, xo + xs * 2.75, ys * 1.5, xs/3, xs/3)) {
+if(globalBeats > 2) {
+ globalBeats--;
+ sequence.instruments.forEach((instrument, i) => {
+instrument.updateBarCount(globalBeats * 2);
+ });
+ resizeInterface(sequence);
+}
+}
+
+if(rectCollision(mouseX, mouseY, xo + xs * 4, ys * 1.5, xs/3, xs/3)) {
+if(globalBeats < 10) {
+ globalBeats++;
+ sequence.instruments.forEach((instrument, i) => {
+instrument.updateBarCount(globalBeats * 2);
+ });
+ resizeInterface(sequence);
+}
+}
+
+if(rectCollision(mouseX, mouseY, xo + xs * 0.5, ys * 1.5, xs/3, xs/3)) {
+cursor(CROSS);
+bpm--;
+}
+
+if(rectCollision(mouseX, mouseY, xo + xs * 1.75, ys * 1.5, xs/3, xs/3)) {
+cursor(CROSS);
+bpm++;
 }
 
 }
@@ -138,35 +261,17 @@ return false;
 function togglePlayback() {
 
 playing = !playing;
-toggleSlider(bpmSlider);
-toggleSlider(tsSlider);
+let beatDuration = 60.0/bpm * 1000;
+
+if(!playing) {
+sequence.instruments.forEach((instrument) => {   
+ instrument.reset();
+ setTimeout(() => {
+   instrument.turnOff();
+ }, beatDuration - globalInterval);
+});
+}
 
 globalInterval = 0;
 
-sequence.instruments.forEach((instrument) => {
-
-instrument.beatPos = 0;
-instrument.barPos = 0;
-instrument.prevBar = instrument.bars[instrument.bars.length-1];
-instrument.prevBeat = instrument.prevBar[instrument.prevBar.length-1];
-instrument.interval = 0;
-instrument.triggered = false;
-
-toggleSlider(instrument.slider);
-toggleSlider(instrument.tsSlider);
-
-instrument.bars.forEach((bar) => {
- bar.beats.forEach((beat) => {
-   beat.triggering = false;
- });
-});
-});
-}
-
-function toggleSlider(slider) {
-if(slider.attribute("disabled")) {
-slider.removeAttribute("disabled");
-} else {
-slider.attribute("disabled", true);
-}
 }
