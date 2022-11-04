@@ -166,7 +166,7 @@ function drawInterfaceLabels() {
   describeElement("Title", "Poly-Taiko-1 taiko music synthesizer");
 
   textSize(fontSize * 1.25);
-  text("Drm Select",  sequence.xOffset + xs * 1.25, sequence.yOffset - ys * 0.85);
+  text("Drums",  sequence.xOffset + xs * 1.25, sequence.yOffset - ys * 0.85);
   text("Sequence",  sequence.xOffset + xs * (25/3), sequence.yOffset - ys * 0.85);
   text("BPM", sequence.xOffset + xs * 1.25, ys * 1.35);
   textFont(lato);

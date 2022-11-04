@@ -177,7 +177,7 @@ class Instrument {
   calculateBarPos() {
     this.bars.forEach((bar, i) => {
       bar.x = this.x + canvasXStep/2 + (i % 4) * canvasXStep * 3;
-      bar.y = this.y + canvasYStep/2 + Math.floor(i / 4) * canvasYStep / 1.25;
+      bar.y = this.y + canvasYStep/2 + Math.floor(i / 4) * canvasYStep / 1;
       bar.calculateButtonPos();
       bar.calculateBeatPos();
     });
@@ -314,7 +314,7 @@ class Instrument {
       prevLen = Math.max(Math.floor(sequence.instruments[i-1].bars.length / 4) + offset, 2);
     }
     
-    this.y = canvasYStep * prevLen * 0.8 + prevY + canvasYStep/2;
+    this.y = canvasYStep * prevLen + prevY + canvasYStep/2;
     this.x = canvasXStep * 3.5;
     this.c = canvasXStep / 1.5;
 
