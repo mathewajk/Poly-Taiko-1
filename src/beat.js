@@ -44,10 +44,9 @@ class Beat {
     this.cycle();
   }
   
-  handleBeat(thisBeat, instrument, timing) {
+  handleBeat(instrument, timing) {
     
     if(!this.active) { return; }
-    
     let samples = drums[instrument.type].samples; 
     
     if(samples.length) {

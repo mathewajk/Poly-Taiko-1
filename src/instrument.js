@@ -100,7 +100,7 @@ class Bar {
     
     this.beats.forEach((beat, j) => {
       beat.draw((i * 4 + j), this.beatDivision, col);
-    }) 
+    });
   }
   
 }
@@ -138,13 +138,45 @@ class Instrument {
     this.type = (++this.type) % drums.length; 
   }
   
+  checkCollisions() {
+    if(rectCollision(mouseX, mouseY, this.x - canvasXStep/1.5, this.y + canvasYStep/2, canvasXStep/3, canvasXStep/3)) {
+      if(this.beatDivision > 2) {
+        this.beatDivision--;
+        this.bars.forEach((bar) => {
+          bar.updateBeatCount(this.beatDivision);
+        });
+      }
+      return;
+    }
+    
+    if(rectCollision(mouseX, mouseY, this.x + canvasXStep/2, this.y + canvasYStep/2, canvasXStep/3, canvasXStep/3)) {
+      if(this.beatDivision < 7) {
+        this.beatDivision++;
+        this.bars.forEach((bar) => {
+          bar.updateBeatCount(this.beatDivision);
+        });
+      }
+      return;
+    }
+    
+    if(rectCollision(mouseX, mouseY, this.x - canvasXStep/1.5, this.y + canvasYStep, canvasXStep/3, canvasXStep/3)) {
+      this.updateBarCount(this.bars.length - 2);
+      resizeInterface();
+    }
+
+    if(rectCollision(mouseX, mouseY, this.x + canvasXStep/2, this.y + canvasYStep, canvasXStep/3, canvasXStep/3)) {
+      this.updateBarCount(this.bars.length + 2);
+      resizeInterface();
+    }
+  }
+  
   handleCollision() {
     this.cycle();
   }
   
   calculateBarPos() {
     this.bars.forEach((bar, i) => {
-      bar.x = this.x + canvasXStep/4 + (i % 4) * canvasXStep * 3;
+      bar.x = this.x + canvasXStep/2 + (i % 4) * canvasXStep * 3;
       bar.y = this.y + canvasYStep/2 + Math.floor(i / 4) * canvasYStep / 1.25;
       bar.calculateButtonPos();
       bar.calculateBeatPos();
@@ -168,6 +200,23 @@ class Instrument {
     
   }
   
+  turnOff() {
+  this.bars.forEach((bar) => {
+      bar.beats.forEach((beat) => {
+        beat.triggering = false;
+      });
+    });
+  }
+  
+  reset() {
+    this.beatPos = 0;
+    this.barPos = 0;
+    this.prevBar = this.bars[this.bars.length-1];
+    this.prevBeat = this.prevBar[this.prevBar.length-1];
+    this.interval = 0;
+    this.triggered = false;
+  }
+  
   draw() {
     
     // Drum icon
@@ -177,20 +226,37 @@ class Instrument {
     ellipse(this.x, this.y, this.c, this.c);
     pop();
     
+    push();
+    fill(this.color);
+    
+    rect(this.x - canvasXStep/1.5, this.y + canvasYStep/2, canvasXStep/3, canvasXStep/3);
+    rect(this.x + canvasXStep/2, this.y + canvasYStep/2, canvasXStep/3, canvasXStep/3);
+    
+    rect(this.x - canvasXStep/1.5, this.y + canvasYStep, canvasXStep/3, canvasXStep/3);
+    rect(this.x + canvasXStep/2, this.y + canvasYStep, canvasXStep/3, canvasXStep/3);
+    pop();
+    
     // Drum name
     fill(0, 0, 0);
-    textSize(fontSize);
+    textSize(fontSize * 1.5);
     textAlign(CENTER, CENTER);
+    
+    text("-", this.x - canvasXStep/1.5 + canvasXStep/6, this.y + canvasYStep/2.25 + canvasXStep/6);
+    text("+", this.x + canvasXStep/2 + canvasXStep/6, this.y + canvasYStep/2.25 + canvasXStep/6);
+    
+    text("-", this.x - canvasXStep/1.5 + canvasXStep/6, this.y + canvasYStep/1.05 + canvasXStep/6);
+    text("+", this.x + canvasXStep/2 + canvasXStep/6, this.y + canvasYStep/1.05 + canvasXStep/6);
+    
     //text(drums[this.type].name, this.x, this.y);
     image(drums[this.type].img, this.x - (this.c + this.c/4)/2, this.y - (this.c + this.c/4)/2, this.c + this.c/4, this.c + this.c/4);
     
     // Separator
-    line(this.x + canvasXStep * 1.4, this.y - canvasYStep/1.6, 
+    line(this.x + canvasXStep * 1.75, this.y - canvasYStep/1.6, 
          this.x + canvasXStep * 13,  this.y - canvasYStep/1.6);
     
-    textSize(fontSize/1.5);
-    text("Global division: " + this.slider.value() + "s", this.x, this.y + canvasYStep / 1.1);
-    text("Time signature: "  + this.tsSlider.value() + "/4", this.x, this.y + canvasYStep * 1.5);
+    textSize(fontSize * 1.25);
+    text("" + this.beatDivision + "s", this.x + canvasXStep/15, this.y + canvasYStep/1.5);
+    text("" + (this.bars.length/2) + "/4", this.x + canvasXStep/15, this.y + canvasYStep * 1.1);
     
     textSize(fontSize);
     
@@ -202,12 +268,22 @@ class Instrument {
   
   incrementPos() {
     this.beatPos++;
-    if(this.beatPos == this.bars[this.barPos].beatDivision) {
+    if(this.beatPos >= this.bars[this.barPos].beatDivision) {
       this.beatPos = 0;
       this.barPos++;
     }
-    if(this.barPos == this.bars.length) {
+    if(this.barPos >= this.bars.length) {
       this.barPos = 0;
+    }
+  }
+  
+  handleInput() {
+    if(rectCollision(mouseX, mouseY, this.x - canvasXStep/1.5, this.y + canvasYStep/2, canvasXStep/3, canvasXStep/3) || 
+    rectCollision(mouseX, mouseY, this.x + canvasXStep/2, this.y + canvasYStep/2, canvasXStep/3, canvasXStep/3) || 
+    
+    rectCollision(mouseX, mouseY, this.x - canvasXStep/1.5, this.y + canvasYStep, canvasXStep/3, canvasXStep/3) || 
+    rectCollision(mouseX, mouseY, this.x + canvasXStep/2, this.y + canvasYStep, canvasXStep/3, canvasXStep/3)) {
+      cursor(CROSS);
     }
   }
   
@@ -243,15 +319,7 @@ class Instrument {
     this.c = canvasXStep / 1.5;
 
     this.calculateBarPos();
-    
-    if(this.slider != null) {
-      this.slider.position(this.x - canvasXStep/3, this.y + canvasYStep/2.5);
-      this.tsSlider.position(this.x - canvasXStep/3, this.y + canvasYStep);
-    
-      let sliderWidth = canvasXStep * (2/3);
-      this.slider.style('width', sliderWidth + 'px');
-      this.tsSlider.style('width', sliderWidth + 'px');
-    }
+  
   }
   
 }
