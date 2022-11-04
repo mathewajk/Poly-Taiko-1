@@ -142,11 +142,11 @@ function drawInterfaceBounds() {
     drawHLine(xo + xs * 2.5 + xs/2*i, yo - ys * 1 + height, xs/2, xs/ 10);
   }
   
-  for(let i=0; i * ys/2 < height; i++) {
-    drawVLine(xo + xs * 0.25, yo - ys * 1.25 + ys/2 * i, ys/10, ys/2);
-    drawVLine(xo + xs * 2.25, yo - ys * 1.25 + ys/2 * i, ys/10, ys/2);
-    drawVLine(xo + xs * 2.5, yo - ys * 1.25 + ys/2 * i, ys/10, ys/2);
-    drawVLine(xo + xs * 2.5 + xs/2*24.75, yo - ys * 1.25 + ys/2 * i, ys/10, ys/2);
+  for(let i=0; i * ys/3 <= height; i++) {
+    drawVLine(xo + xs * 0.25, yo - ys * 1.25 + ys/3 * i, ys/10, ys/2);
+    drawVLine(xo + xs * 2.25, yo - ys * 1.25 + ys/3 * i, ys/10, ys/2);
+    drawVLine(xo + xs * 2.5, yo - ys * 1.25 + ys/3 * i, ys/10, ys/2);
+    drawVLine(xo + xs * 2.5 + xs/2*24.75, yo - ys * 1.25 + ys/3 * i, ys/10, ys/2);
   }
 
 }
