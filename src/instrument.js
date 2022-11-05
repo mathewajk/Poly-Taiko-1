@@ -196,7 +196,22 @@ class Instrument {
       });
     }
     
-        if(presets[this.preset] == "doko don - 4") {
+        
+    if(presets[this.preset] == "do kon ko - 4") {
+      this.bars.forEach((bar, i) => {
+        bar.beats.forEach((beat, j) => {
+          beat.active = 0;
+          if(j % 2 == 0) {
+            beat.active = 1;
+          }
+          if(i % 2 == 1 && j == Math.floor(bar.beats.length/2)) {
+              beat.active = 1;
+            }
+        });
+      });
+    }
+
+    if(presets[this.preset] == "doko don - 4") {
       this.bars.forEach((bar, i) => {
         bar.beats.forEach((beat, j) => {
           beat.active = 0;
