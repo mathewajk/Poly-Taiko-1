@@ -201,7 +201,7 @@ class Instrument {
       this.bars.forEach((bar, i) => {
         bar.beats.forEach((beat, j) => {
           beat.active = 0;
-          if(j % 2 == 0) {
+          if(i % 2 == 0) {
             beat.active = 1;
           }
           if(i % 2 == 1 && j == Math.floor(bar.beats.length/2)) {
