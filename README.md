@@ -27,7 +27,7 @@ The Poly-Taiko-1 relies on [p5js](https://p5js.org) for graphics and sound playb
 ### Releases
 
 - 1.0.0: Initial release (22/10/31)
-- 2.0.0: Multi-pattern interfact with presets (22/11/06)
+- 2.0.0: Multi-pattern interface with presets (22/11/06)
 
 ### Roadmap
 
