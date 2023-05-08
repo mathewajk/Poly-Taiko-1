@@ -69,7 +69,9 @@ class Beat {
       if(this.active == 2) {
         vol *= 0.25;
       }
-      sample.play(timing/1000.0, 1, vol, 0, 1);
+      setTimeout(() => {
+        sample.play(0, 1, vol, 0, 1);
+      }, timing);
     }
   }
   
