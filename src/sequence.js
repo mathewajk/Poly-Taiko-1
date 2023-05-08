@@ -67,7 +67,12 @@ class Sequence {
         let noteStart = noteDuration * (instrument.beatPos);
 
         if(globalInterval >= noteStart - prevDuration && globalInterval <= noteStart) {
+
           if(thisBeat != undefined) {
+            console.log(`Current time is ${globalInterval}s`)
+            console.log(`Note start is ${noteStart}s`)
+            console.log(`Scheduling to start in ${noteStart - globalInterval}s`)
+
             thisBeat.handleBeat(instrument, noteStart - globalInterval);
           }
         
